@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TodoList</string>
+    
+    <string name="hello_user">Hello %s</string>
+    <string name="tasks_today">Today you have %d tasks</string>
+    <string name="edit_profile">Edit your profile</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="notification">Notification</string>
+    <string name="log_out">Logout</string>
+    <string name="about_us">About Us</string>
+    <string name="send_us_a_message">Send us a message</string>
+</resources>
