@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="size_of_icon">36dp</dimen>
+    <dimen name="height_of_category_item">100dp</dimen>
 </resources>
