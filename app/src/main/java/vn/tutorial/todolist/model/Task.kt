@@ -2,36 +2,44 @@ package vn.tutorial.todolist.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.sql.Date
+import java.time.LocalDateTime
 
-@Entity(tableName = "task")
-data class Task (
+
+@Entity(
+    tableName = "task",
+    foreignKeys = [
+        ForeignKey(entity = User::class, parentColumns = arrayOf("id"), childColumns = arrayOf("user_id"), onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = Category::class, parentColumns = arrayOf("category_id"), childColumns = arrayOf("category_id"), onDelete = ForeignKey.CASCADE)
+    ]
+)
+data class Task(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "task_id")
-    private val id: Int,
+    val id: Int,
 
     @ColumnInfo(name = "title")
-    private val title: String,
+    val title: String,
 
     @ColumnInfo(name = "user_id")
-    private val userId: Int,
+    val userId: Int,
 
     @ColumnInfo(name = "category_id")
-    private val categoryId: Int,
+    val categoryId: Int,
 
     @ColumnInfo(name = "description")
-    private val description: String,
+    val description: String,
 
     @ColumnInfo(name = "is_completed")
-    private val isCompleted: Boolean,
+    val isCompleted: Boolean,
 
     @ColumnInfo(name = "date_created")
-    private val dateCreated: Date,
+    val dateCreated: java.sql.Date,
 
     @ColumnInfo(name = "date_begin")
-    private val dateBegin: Date,
+    val dateBegin: LocalDateTime,
 
     @ColumnInfo(name = "date_end")
-    private val dateEnd: Date,
+    val dateEnd: LocalDateTime
 )
