@@ -5,7 +5,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import vn.tutorial.todolist.TodoApplication
-import vn.tutorial.todolist.ui.screen.home.DetailCategoryViewModel
 import vn.tutorial.todolist.ui.screen.home.HomeViewModel
 
 object AppViewModelProvider {
@@ -14,12 +13,6 @@ object AppViewModelProvider {
             HomeViewModel(
                 taskRepository = todoApplication().container.taskRepository,
                 categoryRepository = todoApplication().container.categoryRepository
-            )
-        }
-
-        initializer {
-            DetailCategoryViewModel(
-                taskRepository = todoApplication().container.taskRepository
             )
         }
     }

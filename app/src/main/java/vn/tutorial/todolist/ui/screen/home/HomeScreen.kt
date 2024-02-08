@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +40,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import vn.tutorial.todolist.R
+import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.screen.user.SettingScreen
 import vn.tutorial.todolist.ui.theme.Shapes
@@ -54,10 +57,17 @@ fun HomeScreen (
     navigateToHome: () -> Unit,
     navigateToAdd: () -> Unit,
     navigateToSetting: () -> Unit,
+    navigateToToday: () -> Unit,
+    navigateToPlanned: () -> Unit,
+    navigateToWork: () -> Unit,
+    navigateToPersonal: () -> Unit,
+    navigateToShopping: () -> Unit,
+    viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
 
     val scroll = rememberScrollState()
+    val homeUiState = viewModel.allTasks.collectAsState()
 
     Scaffold(
         bottomBar = {
@@ -88,43 +98,51 @@ fun HomeScreen (
             )
 
             Column {
-                UserInformation()
+                UserInformation(
+                    userName = "pvhung181",
+                    amountOfTasks = homeUiState.value.tasks.size
+                )
 
                 Spacer(modifier = Modifier.padding(24.dp))
 
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.sun_transparent),
-                    title = "Today",
-                    amountOfTasks = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    title = stringResource(id = R.string.today_title),
+                    amountOfTasks = homeUiState.value.tasks.size,
+                    modifier = Modifier.fillMaxWidth(),
+                    navigateToDetail = navigateToToday
                 )
 
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.calendar),
-                    title = "Planned",
+                    title = stringResource(id = R.string.planned_title),
                     amountOfTasks = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    navigateToDetail = navigateToPlanned
                 )
 
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.person),
-                    title = "Personal",
+                    title = stringResource(id = R.string.personal_title),
                     amountOfTasks = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    navigateToDetail = navigateToPersonal
                 )
 
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.document),
-                    title = "Work",
+                    title = stringResource(id = R.string.work_title),
                     amountOfTasks = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    navigateToDetail = navigateToWork
                 )
 
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.shopping),
-                    title = "Shopping",
+                    title = stringResource(id = R.string.shopping_title),
                     amountOfTasks = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    navigateToDetail = navigateToShopping
                 )
             }
         }
@@ -139,10 +157,13 @@ fun CategoryTaskItem(
     image: Painter,
     title: String,
     amountOfTasks: Int,
+    navigateToDetail: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = {
+            navigateToDetail()
+        },
         modifier = modifier
             .padding(16.dp)
             .height(dimensionResource(id = R.dimen.height_of_category_item)),
@@ -187,6 +208,8 @@ fun CategoryTaskItem(
 
 @Composable
 fun UserInformation(
+    userName: String,
+    amountOfTasks: Int,
     modifier: Modifier = Modifier
 ) {
     Row (
@@ -197,14 +220,14 @@ fun UserInformation(
     ){
         Column {
             Text(
-                text = stringResource(id = R.string.hello_user, "User"),
+                text = stringResource(id = R.string.hello_user, userName),
                 style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
             Text(
-                text = stringResource(id = R.string.tasks_today, 2),
+                text = stringResource(id = R.string.tasks_today, amountOfTasks),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -239,13 +262,16 @@ fun BottomAppBar(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ){
-        IconButton(onClick = { navigateToHome() }) {
+        IconButton(
+            onClick = { navigateToHome() },
+            enabled = (currentScreen !=  HomeScreen.route)
+        ) {
             Icon(
                 imageVector = Icons.Default.Home,
                 contentDescription = null,
-                modifier = Modifier.size(
-                    dimensionResource(id = R.dimen.size_of_icon)
-                ),
+                modifier = Modifier
+                    .size(
+                    dimensionResource(id = R.dimen.size_of_icon)),
                 tint = if(currentScreen == HomeScreen.route) MaterialTheme.colorScheme.primary else Color.Black
             )
         }
@@ -270,12 +296,15 @@ fun BottomAppBar(
 
 
 
-        IconButton(onClick = { navigateToSetting() }) {
+        IconButton(
+            onClick = { navigateToSetting() },
+            enabled = (currentScreen !=  SettingScreen.route)
+        ) {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
                 contentDescription = null,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_of_icon)),
-                tint = if(currentScreen == SettingScreen.route) MaterialTheme.colorScheme.secondary else Color.Black
+                tint = if(currentScreen == SettingScreen.route) MaterialTheme.colorScheme.primary else Color.Black
             )
         }
     }
@@ -301,6 +330,6 @@ fun BottomAppBarPreview() {
 )
 fun HomeScreenPreview() {
     HomeScreen(
-        {}, {}, {}
+        {}, {}, {},{},{},{},{},{}
     )
 }

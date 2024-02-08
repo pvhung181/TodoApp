@@ -11,8 +11,16 @@
     <string name="send_us_a_message">Send us a message</string>
 
 
-<!--    Screens tiltle-->
+<!--    Screens title-->
     <string name="home_title">Home</string>
     <string name="setting_title">Settings</string>
     <string name="add_title">Add tasks</string>
+
+<!--    Category title-->
+    <string name="personal_title">Personal</string>
+    <string name="work_title">Work</string>
+    <string name="shopping_title">Shopping</string>
+    <string name="today_title">Today</string>
+    <string name="planned_title">Planned</string>
+    <string name="detail">Detail</string>
 </resources>
