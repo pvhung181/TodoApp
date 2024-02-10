@@ -6,11 +6,13 @@ import vn.tutorial.todolist.data.repository.CategoryRepository
 import vn.tutorial.todolist.data.repository.CategoryRepositoryImpl
 import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.TaskRepositoryImpl
+import vn.tutorial.todolist.data.repository.UserPreferencesRepository
 import kotlin.reflect.KProperty
 
 interface Container {
     val taskRepository: TaskRepository
     val categoryRepository: CategoryRepository
+    val dataStoreManager: DataStoreManager
 }
 
 class DefaultContainer(
@@ -26,6 +28,9 @@ class DefaultContainer(
         CategoryRepositoryImpl(
             categoryDao = TodoDatabase.getDatabase(context).getCategoryDao()
         )
+    }
+    override val dataStoreManager: DataStoreManager by lazy {
+        DataStoreManager(context)
     }
 
 }

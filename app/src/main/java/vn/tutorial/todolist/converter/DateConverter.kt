@@ -19,7 +19,6 @@ class DateConverter {
         return date?.toString()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @TypeConverter
     fun stringToLocalDateTime(value: String): LocalDateTime {
         val date = value.split("T")[0].split("-")

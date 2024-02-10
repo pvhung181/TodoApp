@@ -1,5 +1,7 @@
 package vn.tutorial.todolist.ui.screen.user
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -13,25 +15,33 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import vn.tutorial.todolist.R
+import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.theme.Shapes
 
@@ -47,8 +57,12 @@ fun UserScreen(
     navigateToAdd: () -> Unit,
     navigateToSetting: () -> Unit,
     navigateToAbout: () -> Unit,
+    viewModel: SettingScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
+
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         bottomBar = {
             vn.tutorial.todolist.ui.screen.home.BottomAppBar(
@@ -101,17 +115,63 @@ fun UserScreen(
 
             Settings(
                 navigateToAbout = navigateToAbout,
+                uiState = uiState,
+                onSelectedThemeChange = {
+                    v ->
+                    viewModel.selectTheme(v)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp, bottom = 8.dp)
             )
         }
+
+//        if(viewModel.detectDarkThemeChange()) {
+//            AlertDialogForSwitch(
+//                onDismiss = {
+//                    viewModel.isDarkThemeChange = uiState.isDarkTheme
+//                },
+//                title = "Title",
+//                text = "This is text"
+//            )
+//        }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AlertDialogForSwitch(
+    onDismiss: () -> Unit,
+    title: String,
+    text: String,
+    modifier: Modifier = Modifier
+) {
+
+    AlertDialog(
+        onDismissRequest = {
+
+        },
+        confirmButton = {
+                        
+        },
+        dismissButton = {
+
+        },
+        title = {
+            Text(text = title)
+        },
+        text = {
+            Text(text = text)
+        }
+    )
+}
+
 
 @Composable
 fun Settings(
     navigateToAbout: () -> Unit,
+    uiState: SettingUiState,
+    onSelectedThemeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -123,13 +183,14 @@ fun Settings(
             SwitchSettingItem(
                 icon = painterResource(id = R.drawable.baseline_dark_mode_24),
                 title = stringResource(id = R.string.night_mode),
-                onCheckedChange = {
-                }
+                checked = uiState.isDarkTheme,
+                onCheckedChange = onSelectedThemeChange
             )
 
             SwitchSettingItem(
                 icon = painterResource(id = R.drawable.notifications_active_24),
                 title = stringResource(id = R.string.notification),
+                checked = false,
                 onCheckedChange = {}
             )
 
@@ -173,16 +234,14 @@ fun Settings(
 fun SwitchSettingItem(
     icon: Painter,
     title: String,
+    checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val check = remember{
-        mutableStateOf(false)
-    }
     Row (
         modifier = modifier
             .clickable {
-                check.value = !check.value
+                onCheckedChange(!checked)
             },
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -197,11 +256,14 @@ fun SwitchSettingItem(
         Spacer(modifier = Modifier.weight(1f))
 
         Switch(
-            checked = check.value,
-            onCheckedChange = {
-                check.value = !check.value
-            },
-            modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp)
+                .clickable {
+
+                }
+        )
 
     }
 }
