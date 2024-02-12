@@ -125,16 +125,6 @@ fun UserScreen(
                     .padding(top = 8.dp, bottom = 8.dp)
             )
         }
-
-//        if(viewModel.detectDarkThemeChange()) {
-//            AlertDialogForSwitch(
-//                onDismiss = {
-//                    viewModel.isDarkThemeChange = uiState.isDarkTheme
-//                },
-//                title = "Title",
-//                text = "This is text"
-//            )
-//        }
     }
 }
 

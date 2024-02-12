@@ -28,7 +28,7 @@ import vn.tutorial.todolist.model.Task
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.screen.add.TopAppBar
-import vn.tutorial.todolist.uitilities.prettierLocalDateTime
+import vn.tutorial.todolist.util.prettierLocalDateTime
 
 
 object DetailTaskCategory : NavigationDestination {

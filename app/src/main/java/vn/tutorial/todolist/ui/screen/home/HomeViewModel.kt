@@ -32,11 +32,7 @@ class HomeViewModel(
         taskRepository.getTaskByCategoryId(3).map { HomeUiState(it) }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
 
-    init {
-        viewModelScope.launch {
-            var categories: List<Category> = categoryRepository.getALlCategoriesStream()
-        }
-    }
+
 
 }
 

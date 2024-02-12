@@ -1,13 +1,10 @@
 package vn.tutorial.todolist.data
 
 import android.content.Context
-import vn.tutorial.todolist.data.dao.CategoryDao
 import vn.tutorial.todolist.data.repository.CategoryRepository
 import vn.tutorial.todolist.data.repository.CategoryRepositoryImpl
 import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.TaskRepositoryImpl
-import vn.tutorial.todolist.data.repository.UserPreferencesRepository
-import kotlin.reflect.KProperty
 
 interface Container {
     val taskRepository: TaskRepository

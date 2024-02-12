@@ -28,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,7 +68,10 @@ fun HomeScreen (
 ) {
 
     val scroll = rememberScrollState()
-    val homeUiState = viewModel.allTasks.collectAsState()
+    val allTasks by viewModel.allTasks.collectAsState()
+    val personalUiState by viewModel.personalTasks.collectAsState()
+    val workUiState by viewModel.workTasks.collectAsState()
+    val shoppingUiState by viewModel.shoppingTasks.collectAsState()
 
     Scaffold(
         bottomBar = {
@@ -100,7 +104,7 @@ fun HomeScreen (
             Column {
                 UserInformation(
                     userName = "pvhung181",
-                    amountOfTasks = homeUiState.value.tasks.size
+                    amountOfTasks = allTasks.tasks.size
                 )
 
                 Spacer(modifier = Modifier.padding(24.dp))
@@ -108,7 +112,7 @@ fun HomeScreen (
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.sun_transparent),
                     title = stringResource(id = R.string.today_title),
-                    amountOfTasks = homeUiState.value.tasks.size,
+                    amountOfTasks = allTasks.tasks.size,
                     modifier = Modifier.fillMaxWidth(),
                     navigateToDetail = navigateToToday
                 )
@@ -116,7 +120,7 @@ fun HomeScreen (
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.calendar),
                     title = stringResource(id = R.string.planned_title),
-                    amountOfTasks = 1,
+                    amountOfTasks = allTasks.tasks.size,
                     modifier = Modifier.fillMaxWidth(),
                     navigateToDetail = navigateToPlanned
                 )
@@ -124,7 +128,7 @@ fun HomeScreen (
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.person),
                     title = stringResource(id = R.string.personal_title),
-                    amountOfTasks = 1,
+                    amountOfTasks = personalUiState.tasks.size,
                     modifier = Modifier.fillMaxWidth(),
                     navigateToDetail = navigateToPersonal
                 )
@@ -132,7 +136,7 @@ fun HomeScreen (
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.document),
                     title = stringResource(id = R.string.work_title),
-                    amountOfTasks = 1,
+                    amountOfTasks = workUiState.tasks.size,
                     modifier = Modifier.fillMaxWidth(),
                     navigateToDetail = navigateToWork
                 )
@@ -140,7 +144,7 @@ fun HomeScreen (
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.shopping),
                     title = stringResource(id = R.string.shopping_title),
-                    amountOfTasks = 1,
+                    amountOfTasks = shoppingUiState.tasks.size,
                     modifier = Modifier.fillMaxWidth(),
                     navigateToDetail = navigateToShopping
                 )

@@ -1,5 +1,6 @@
 package vn.tutorial.todolist.ui.testui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,33 +23,15 @@ import androidx.compose.ui.unit.dp
 fun Test(
 
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-        ) {
-            Checkbox(checked = false, onCheckedChange = {})
-            Column {
-                Text(text = "Title")
-                Text(text = "This is description")
-                Text(text = "Duration : 12:00am - 21.00pm")
-            }
+    Box {
+        Column {
+            Text(text = "123")
+            Text(text = "123")
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            IconButton(
-                onClick = { /*TODO*/ }
-            ) {
-                Icon(
-                    imageVector = Icons.TwoTone.Delete,
-                    contentDescription = null,
-                    tint = Color.Red
-                )
-            }
         }
+
+        Text(text = "32423")
+
     }
 }
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import vn.tutorial.todolist.TodoApplication
+import vn.tutorial.todolist.ui.screen.add.AddTaskViewModel
 import vn.tutorial.todolist.ui.screen.home.HomeViewModel
 import vn.tutorial.todolist.ui.screen.user.SettingScreenViewModel
 
@@ -20,6 +21,11 @@ object AppViewModelProvider {
         initializer {
             SettingScreenViewModel(
                 dataStoreManager = todoApplication().container.dataStoreManager
+            )
+        }
+
+        initializer {
+            AddTaskViewModel(
             )
         }
     }
