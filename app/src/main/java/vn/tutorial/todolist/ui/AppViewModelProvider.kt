@@ -26,6 +26,7 @@ object AppViewModelProvider {
 
         initializer {
             AddTaskViewModel(
+                taskRepository = todoApplication().container.taskRepository
             )
         }
     }

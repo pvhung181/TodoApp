@@ -13,4 +13,8 @@ fun prettierTime(hour: String, minute: String): String {
             if(minute.length == 1) minute.padStart(2, '0') else minute
 }
 
+fun compareLocalDate(l1: LocalDateTime, l2: LocalDateTime) {
+    l1.compareTo(l2)
+}
+
 val dateFormatter: SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)

@@ -38,19 +38,19 @@ fun TodoNavHost(
                     navController.navigate(SettingScreen.route)
                 },
                 navigateToToday = {
-                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.TODAY.name}")
+                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.TODAY.title}")
                 },
                 navigateToPlanned = {
-                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.PLANNED.name}")
+                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.PLANNED.title}")
                 },
                 navigateToPersonal = {
-                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.PERSONAL.name}")
+                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.PERSONAL.title}")
                 },
                 navigateToWork = {
-                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.WORK.name}")
+                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.WORK.title}")
                 },
                 navigateToShopping = {
-                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.SHOPPING.name}")
+                    navController.navigate("${DetailTaskCategory.root}/${CategoryTitle.SHOPPING.title}")
                 }
             )
         }

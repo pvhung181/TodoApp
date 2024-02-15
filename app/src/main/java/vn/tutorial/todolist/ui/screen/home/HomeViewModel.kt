@@ -33,7 +33,9 @@ class HomeViewModel(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
 
 
-
+    suspend fun deleteTask(task: Task) {
+            taskRepository.deleteTask(task)
+    }
 }
 
 class HomeUiState(

@@ -1,5 +1,7 @@
 package vn.tutorial.todolist.ui.screen.user
 
+import android.app.Activity
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -24,12 +26,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +66,7 @@ fun UserScreen(
     modifier: Modifier = Modifier
 ) {
 
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
@@ -128,33 +134,25 @@ fun UserScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AlertDialogForSwitch(
-    onDismiss: () -> Unit,
-    title: String,
-    text: String,
-    modifier: Modifier = Modifier
-) {
-
-    AlertDialog(
-        onDismissRequest = {
-
-        },
-        confirmButton = {
-                        
-        },
-        dismissButton = {
-
-        },
-        title = {
-            Text(text = title)
-        },
-        text = {
-            Text(text = text)
-        }
-    )
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun AlertDialogForSwitch(
+//    onDismiss: () -> Unit,
+//    title: @Composable () -> Unit,
+//    text: @Composable () -> Unit,
+//    confirmButton: @Composable () -> Unit,
+//    dismissButton: @Composable () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//
+//    AlertDialog(
+//        onDismissRequest = onDismiss,
+//        confirmButton = confirmButton,
+//        dismissButton = dismissButton,
+//        title = title,
+//        text = text
+//    )
+//}
 
 
 @Composable
@@ -164,9 +162,10 @@ fun Settings(
     onSelectedThemeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
 
-    ) {
+    val activity = LocalContext.current as Activity
+
+    Column {
         Card (
             modifier = modifier,
         ){
@@ -174,14 +173,18 @@ fun Settings(
                 icon = painterResource(id = R.drawable.baseline_dark_mode_24),
                 title = stringResource(id = R.string.night_mode),
                 checked = uiState.isDarkTheme,
-                onCheckedChange = onSelectedThemeChange
+                onCheckedChange = onSelectedThemeChange,
+                onClick = {
+                    activity.recreate()
+                }
             )
 
             SwitchSettingItem(
                 icon = painterResource(id = R.drawable.notifications_active_24),
                 title = stringResource(id = R.string.notification),
                 checked = false,
-                onCheckedChange = {}
+                onCheckedChange = {},
+                onClick = {}
             )
 
         }
@@ -222,16 +225,18 @@ fun Settings(
 
 @Composable
 fun SwitchSettingItem(
+    onClick: () -> Unit,
     icon: Painter,
     title: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row (
         modifier = modifier
             .clickable {
                 onCheckedChange(!checked)
+                onClick()
             },
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -248,14 +253,35 @@ fun SwitchSettingItem(
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
-            modifier = Modifier
+            modifier = modifier
                 .padding(start = 8.dp, end = 8.dp)
                 .clickable {
-
+                    onClick()
                 }
         )
 
     }
+
+//    if(showDialog) {
+//        AlertDialogForSwitch(
+//            onDismiss = onDismiss,
+//            title = {
+//                Text(text = "Inform")
+//            },
+//            text = {
+//                Text(text = "The mode will be applied after restarting the application")
+//            },
+//            confirmButton = {
+//                TextButton(onClick = {
+//                    activity.recreate()
+//                }) {
+//                    Text(text = "Restart")
+//                }
+//            },
+//            dismissButton = {
+//                Text(text = "Later")
+//            })
+//    }
 }
 
 @Composable

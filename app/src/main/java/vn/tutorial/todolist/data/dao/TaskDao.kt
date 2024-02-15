@@ -1,6 +1,9 @@
 package vn.tutorial.todolist.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import vn.tutorial.todolist.model.Category
@@ -18,5 +21,10 @@ interface TaskDao {
     @Query("select * from task where category_id = :categoryId")
     fun getTaskByCategoryId(categoryId: Int): Flow<List<Task>>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun saveTask(task: Task)
+
+    @Delete
+    suspend fun deleteTask(task: Task)
 
 }

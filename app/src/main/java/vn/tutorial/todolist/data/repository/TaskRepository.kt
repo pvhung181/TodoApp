@@ -9,6 +9,9 @@ interface TaskRepository {
     fun getTaskById(id: Int): Flow<Task>
     fun getTaskByCategoryId(categoryId: Int): Flow<List<Task>>
     fun getAllTask(): Flow<List<Task>>
+    suspend fun saveTask(task: Task)
+
+    suspend fun deleteTask  (task: Task)
 
 }
 
@@ -18,7 +21,6 @@ class TaskRepositoryImpl(
     override fun getTaskById(id: Int): Flow<Task> {
         return taskDao.getTaskById(id)
     }
-
     override fun getTaskByCategoryId(categoryId: Int): Flow<List<Task>> {
         return taskDao.getTaskByCategoryId(categoryId)
     }
@@ -26,5 +28,15 @@ class TaskRepositoryImpl(
     override fun getAllTask(): Flow<List<Task>> {
         return taskDao.getAllTask()
     }
+
+    override suspend fun saveTask(task: Task) {
+        taskDao.saveTask(task)
+    }
+
+    override suspend fun deleteTask(task: Task) {
+        taskDao.deleteTask(task)
+    }
+
+
 }
 

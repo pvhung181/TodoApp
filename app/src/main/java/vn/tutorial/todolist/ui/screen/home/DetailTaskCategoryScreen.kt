@@ -18,12 +18,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import vn.tutorial.todolist.model.Task
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
@@ -55,35 +57,59 @@ fun DetailTaskCategoryScreen(
     modifier: Modifier = Modifier
 ) {
 
+    val coroutineScope = rememberCoroutineScope()
     val personalUiState = viewModel.personalTasks.collectAsState()
     val workUiState = viewModel.workTasks.collectAsState()
     val shoppingUiState = viewModel.shoppingTasks.collectAsState()
 
     when (title) {
-        CategoryTitle.TODAY.name -> TodayCategoryScreen(
+        CategoryTitle.TODAY.title -> TodayCategoryScreen(
             title = CategoryTitle.TODAY.title,
             tasks = workUiState.value.tasks,
             navigateBack = navigateBack
         )
-        CategoryTitle.PLANNED.name -> PlannedCategoryScreen(
+
+        CategoryTitle.PLANNED.title -> PlannedCategoryScreen(
             title = CategoryTitle.PLANNED.title,
             navigateBack = navigateBack
         )
-        CategoryTitle.PERSONAL.name -> CategoryDetailScreen(
-            title = CategoryTitle.PERSONAL.title,
-            tasks = personalUiState.value.tasks,
-            navigateBack = navigateBack
+
+        else -> CategoryDetailScreen(
+            title = title,
+            tasks = when(title) {
+                CategoryTitle.PERSONAL.title -> personalUiState.value.tasks
+                CategoryTitle.WORK.title -> workUiState.value.tasks
+                else -> shoppingUiState.value.tasks
+            },
+            navigateBack = navigateBack,
+            onDelete = { task ->
+                coroutineScope.launch {
+                    viewModel.deleteTask(task)
+                }
+            }
         )
-        CategoryTitle.WORK.name -> CategoryDetailScreen(
-            title = CategoryTitle.WORK.title,
-            tasks = workUiState.value.tasks,
-            navigateBack = navigateBack
-        )
-        CategoryTitle.SHOPPING.name -> CategoryDetailScreen(
-            title = CategoryTitle.SHOPPING.title,
-            tasks = shoppingUiState.value.tasks,
-            navigateBack = navigateBack
-        )
+
+//        CategoryTitle.WORK.name -> CategoryDetailScreen(
+//            title = CategoryTitle.WORK.title,
+//            tasks = workUiState.value.tasks,
+//            navigateBack = navigateBack,
+//            onDelete = { task ->
+//                coroutineScope.launch {
+//                    viewModel.deleteTask(task)
+//                }
+//            }
+//        )
+//
+//        CategoryTitle.SHOPPING.name -> CategoryDetailScreen(
+//            title = CategoryTitle.SHOPPING.title,
+//            tasks = shoppingUiState.value.tasks,
+//            navigateBack = navigateBack,
+//            onDelete = { task ->
+//                coroutineScope.launch {
+//                    viewModel.deleteTask(task)
+//                }
+//            }
+//        )
     }
 
 }
@@ -103,9 +129,11 @@ fun TodayCategoryScreen(
         LazyColumn(
             modifier = Modifier.padding(it)
         ) {
-            items(tasks) {
-                task ->
-                TaskItem(task = task)
+            items(tasks) { task ->
+                TaskItem(
+                    task = task,
+                    onDelete = {}
+                )
             }
         }
     }
@@ -126,9 +154,11 @@ fun PlannedCategoryScreen(
         LazyColumn(
             modifier = Modifier.padding(it)
         ) {
-            items(tasks) {
-                    task ->
-                TaskItem(task = task)
+            items(tasks) { task ->
+                TaskItem(
+                    task = task,
+                    onDelete = {}
+                )
             }
         }
     }
@@ -138,6 +168,7 @@ fun PlannedCategoryScreen(
 fun CategoryDetailScreen(
     title: String,
     tasks: List<Task> = listOf(),
+    onDelete: (Task) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -149,9 +180,13 @@ fun CategoryDetailScreen(
         LazyColumn(
             modifier = Modifier.padding(it)
         ) {
-            items(tasks) {
-                    task ->
-                TaskItem(task = task)
+            items(tasks) { task ->
+                TaskItem(
+                    task = task,
+                    onDelete = {
+                        onDelete(task)
+                    }
+                )
             }
         }
     }
@@ -161,6 +196,7 @@ fun CategoryDetailScreen(
 @Composable
 fun TaskItem(
     task: Task,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -179,14 +215,20 @@ fun TaskItem(
                     style = MaterialTheme.typography.displayMedium
                 )
                 Text(text = task.description)
-                Text(text = "Duration : ${prettierLocalDateTime(task.dateBegin)} - ${prettierLocalDateTime(task.dateEnd)}")
+                Text(
+                    text = "Duration : ${prettierLocalDateTime(task.dateBegin)} - ${
+                        prettierLocalDateTime(
+                            task.dateEnd
+                        )
+                    }"
+                )
 
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
             IconButton(
-                onClick = { /*TODO*/ }
+                onClick = onDelete
             ) {
                 Icon(
                     imageVector = Icons.TwoTone.Delete,
