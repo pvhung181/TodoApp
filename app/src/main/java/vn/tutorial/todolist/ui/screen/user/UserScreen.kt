@@ -1,7 +1,10 @@
 package vn.tutorial.todolist.ui.screen.user
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -163,7 +166,7 @@ fun Settings(
     modifier: Modifier = Modifier
 ) {
 
-    val activity = LocalContext.current as Activity
+
 
     Column {
         Card (
@@ -175,7 +178,7 @@ fun Settings(
                 checked = uiState.isDarkTheme,
                 onCheckedChange = onSelectedThemeChange,
                 onClick = {
-                    activity.recreate()
+
                 }
             )
 
@@ -232,6 +235,7 @@ fun SwitchSettingItem(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
     Row (
         modifier = modifier
             .clickable {
@@ -261,7 +265,6 @@ fun SwitchSettingItem(
         )
 
     }
-
 //    if(showDialog) {
 //        AlertDialogForSwitch(
 //            onDismiss = onDismiss,
@@ -273,7 +276,8 @@ fun SwitchSettingItem(
 //            },
 //            confirmButton = {
 //                TextButton(onClick = {
-//                    activity.recreate()
+//                    context.startActivity(restartIntent)
+//                    Runtime.getRuntime().exit(0)
 //                }) {
 //                    Text(text = "Restart")
 //                }

@@ -32,14 +32,23 @@ class HomeViewModel(
         taskRepository.getTaskByCategoryId(3).map { HomeUiState(it) }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
 
+    var todayTask: List<Task> = emptyList()
 
     suspend fun deleteTask(task: Task) {
             taskRepository.deleteTask(task)
     }
+
+    suspend fun updateTask(task: Task) {
+        taskRepository.updateTask(task)
+    }
+
+    suspend fun getTaskByDate(date: String): List<Task> {
+          return  taskRepository.getTaskByDate(date)
+    }
 }
 
 class HomeUiState(
-    val tasks: List<Task> = listOf(),
+    var tasks: List<Task> = listOf(),
 )
 
 fun HomeUiState.getByCategoryId(id: Int): List<Task> {

@@ -2,7 +2,6 @@ package vn.tutorial.todolist.data.repository
 
 import kotlinx.coroutines.flow.Flow
 import vn.tutorial.todolist.data.dao.TaskDao
-import vn.tutorial.todolist.model.Category
 import vn.tutorial.todolist.model.Task
 
 interface TaskRepository {
@@ -13,6 +12,9 @@ interface TaskRepository {
 
     suspend fun deleteTask  (task: Task)
 
+    suspend fun updateTask(task: Task)
+
+    suspend fun getTaskByDate(date: String): List<Task>
 }
 
 class TaskRepositoryImpl(
@@ -35,6 +37,14 @@ class TaskRepositoryImpl(
 
     override suspend fun deleteTask(task: Task) {
         taskDao.deleteTask(task)
+    }
+
+    override suspend fun updateTask(task: Task) {
+        taskDao.updateTask(task)
+    }
+
+    override suspend fun getTaskByDate(date: String): List<Task> {
+        return taskDao.getTaskByDate(date)
     }
 
 

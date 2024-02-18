@@ -1,5 +1,8 @@
 package vn.tutorial.todolist.ui.screen.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,30 +10,50 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.twotone.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import vn.tutorial.todolist.R
 import vn.tutorial.todolist.model.Task
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.screen.add.TopAppBar
+import vn.tutorial.todolist.util.localDateTimeToDate
 import vn.tutorial.todolist.util.prettierLocalDateTime
+import java.sql.Date
 
 
 object DetailTaskCategory : NavigationDestination {
@@ -61,12 +84,28 @@ fun DetailTaskCategoryScreen(
     val personalUiState = viewModel.personalTasks.collectAsState()
     val workUiState = viewModel.workTasks.collectAsState()
     val shoppingUiState = viewModel.shoppingTasks.collectAsState()
+    val allTasks = viewModel.allTasks.collectAsState()
+
 
     when (title) {
         CategoryTitle.TODAY.title -> TodayCategoryScreen(
             title = CategoryTitle.TODAY.title,
-            tasks = workUiState.value.tasks,
-            navigateBack = navigateBack
+            tasks = allTasks.value.tasks.filter {
+                val date = Date(System.currentTimeMillis())
+                date.toString() == localDateTimeToDate(it.dateBegin).toString()
+            }.sortedWith(compareBy {it.dateBegin} ),
+            navigateBack = navigateBack,
+            onDelete = { task ->
+                coroutineScope.launch {
+                    viewModel.deleteTask(task)
+                }
+            },
+            onCheckChange = { v, t ->
+                coroutineScope.launch {
+                    viewModel.updateTask(t.copy(isCompleted = v))
+                }
+            }
+
         )
 
         CategoryTitle.PLANNED.title -> PlannedCategoryScreen(
@@ -86,32 +125,116 @@ fun DetailTaskCategoryScreen(
                 coroutineScope.launch {
                     viewModel.deleteTask(task)
                 }
+            },
+            onCheckChange = { v, t ->
+                coroutineScope.launch {
+                    viewModel.updateTask(t.copy(isCompleted = v))
+                }
             }
         )
-
-//        CategoryTitle.WORK.name -> CategoryDetailScreen(
-//            title = CategoryTitle.WORK.title,
-//            tasks = workUiState.value.tasks,
-//            navigateBack = navigateBack,
-//            onDelete = { task ->
-//                coroutineScope.launch {
-//                    viewModel.deleteTask(task)
-//                }
-//            }
-//        )
-//
-//        CategoryTitle.SHOPPING.name -> CategoryDetailScreen(
-//            title = CategoryTitle.SHOPPING.title,
-//            tasks = shoppingUiState.value.tasks,
-//            navigateBack = navigateBack,
-//            onDelete = { task ->
-//                coroutineScope.launch {
-//                    viewModel.deleteTask(task)
-//                }
-//            }
-//        )
     }
 
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryDetailScreen(
+    title: String,
+    tasks: List<Task> = listOf(),
+    onDelete: (Task) -> Unit,
+    navigateBack: () -> Unit,
+    onCheckChange: (Boolean, Task) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = System.currentTimeMillis()
+    )
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+    var previousSelectedDate by remember {
+        mutableLongStateOf(System.currentTimeMillis())
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(navigateBack = navigateBack, title = title)
+        }
+    ) {
+        Column(
+            modifier = modifier.padding(it),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Row(
+                modifier = Modifier
+                    .border(
+                        shape = RoundedCornerShape(16.dp),
+                        width = 1.dp,
+                        color = Color.Gray
+                    )
+                    .padding(16.dp)
+                    .clickable {
+                        openDialog = true
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = Date(datePickerState.selectedDateMillis!!).toString()
+                )
+
+                Spacer(modifier = Modifier.padding(2.dp))
+
+                Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = null)
+            }
+
+            LazyColumn {
+                items(tasks.filter {item ->
+                    Date(datePickerState.selectedDateMillis!!).toString() ==
+                            localDateTimeToDate(item.dateBegin).toString()
+                }) { task ->
+                    TaskItem(
+                        task = task,
+                        onDelete = {
+                            onDelete(task)
+                        },
+                        onCheckChange = {v ->
+                            onCheckChange(v, task)
+                        }
+                    )
+                }
+            }
+        }
+
+    }
+
+    if(openDialog) {
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog = false
+
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    openDialog = false
+                    previousSelectedDate = datePickerState.selectedDateMillis!!
+                }) {
+                    Text(text = "Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    openDialog = false
+                    datePickerState.setSelection(previousSelectedDate)
+                }) {
+                    Text(text = "No")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 }
 
 @Composable
@@ -119,25 +242,46 @@ fun TodayCategoryScreen(
     title: String,
     tasks: List<Task> = listOf(),
     navigateBack: () -> Unit,
+    onDelete: (Task) -> Unit,
+    onCheckChange: (Boolean, Task) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Scaffold(
         topBar = {
             TopAppBar(navigateBack = navigateBack, title = title)
         }
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it)
-        ) {
-            items(tasks) { task ->
-                TaskItem(
-                    task = task,
-                    onDelete = {}
-                )
+        if(tasks.isEmpty()) {
+            Text(
+                text = "You don't have any task today",
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier.padding(it)
+            )
+        }
+        else {
+            LazyColumn(
+                modifier = Modifier.padding(it)
+            ) {
+                items(tasks) { task ->
+                    TaskItem(
+                        task = task,
+                        onDelete = {
+                            onDelete(task)
+                        },
+                        onCheckChange = {v ->
+                            onCheckChange(v, task)
+                        }
+                    )
+                }
             }
         }
+
     }
 }
+
+
+
 
 @Composable
 fun PlannedCategoryScreen(
@@ -151,89 +295,114 @@ fun PlannedCategoryScreen(
             TopAppBar(navigateBack = navigateBack, title = title)
         }
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it)
+        Column(
+            modifier = modifier.padding(it)
         ) {
-            items(tasks) { task ->
-                TaskItem(
-                    task = task,
-                    onDelete = {}
-                )
+
+            LazyColumn(
+                modifier = Modifier.padding(it)
+            ) {
+                items(tasks) { task ->
+                    TaskItem(
+                        task = task,
+                        onDelete = {}
+                    )
+                }
             }
         }
+
     }
 }
-
-@Composable
-fun CategoryDetailScreen(
-    title: String,
-    tasks: List<Task> = listOf(),
-    onDelete: (Task) -> Unit,
-    navigateBack: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(navigateBack = navigateBack, title = title)
-        }
-    ) {
-        LazyColumn(
-            modifier = Modifier.padding(it)
-        ) {
-            items(tasks) { task ->
-                TaskItem(
-                    task = task,
-                    onDelete = {
-                        onDelete(task)
-                    }
-                )
-            }
-        }
-    }
-}
-
 
 @Composable
 fun TaskItem(
     task: Task,
     onDelete: () -> Unit,
+    onCheckChange: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+
+    var openDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
         Row(
-            modifier = Modifier,
+            modifier = Modifier
+                .background(
+                    color = if(task.isCompleted) colorResource(id = R.color.little_green)
+                    else colorResource(id = R.color.little_red)
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Checkbox(checked = false, onCheckedChange = {})
-            Column {
+            Checkbox(
+                checked = task.isCompleted,
+                onCheckedChange = onCheckChange
+            )
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = task.title,
-                    style = MaterialTheme.typography.displayMedium
+                    style = MaterialTheme.typography.displayMedium,
+                    textDecoration = if(task.isCompleted) TextDecoration.LineThrough else null
                 )
-                Text(text = task.description)
+                Text(
+                    text = task.description,
+                    textDecoration = if(task.isCompleted) TextDecoration.LineThrough else null
+                )
                 Text(
                     text = "Duration : ${prettierLocalDateTime(task.dateBegin)} - ${
                         prettierLocalDateTime(
                             task.dateEnd
                         )
-                    }"
+                    }",
+                    textDecoration = if(task.isCompleted) TextDecoration.LineThrough else null
                 )
 
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            //Spacer(modifier = Modifier.weight(1f))
 
             IconButton(
-                onClick = onDelete
+                onClick = {
+                    openDialog = true
+                }
             ) {
                 Icon(
                     imageVector = Icons.TwoTone.Delete,
                     contentDescription = null,
                     tint = Color.Red
+                )
+            }
+
+            if(openDialog) {
+                AlertDialog(
+                    onDismissRequest = { openDialog = false },
+                    confirmButton = {
+                        IconButton(onClick = {
+                            onDelete()
+                            openDialog = false
+                        }) {
+                            Text(text = "Yes")
+                        }
+                    },
+                    dismissButton = {
+                        IconButton(onClick = {openDialog = false}) {
+                            Text(text = "No")
+                        }
+                    },
+                    title = {
+                        Text(text = "Do you want to delete ?")
+                    },
+                    icon = {
+                        Icon(imageVector = Icons.Default.Warning, contentDescription = null)
+                    }
+
                 )
             }
         }

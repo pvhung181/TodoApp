@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,6 +48,8 @@ import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.screen.user.SettingScreen
 import vn.tutorial.todolist.ui.theme.Shapes
+import vn.tutorial.todolist.util.localDateTimeToDate
+import java.sql.Date
 
 object HomeScreen : NavigationDestination {
     override val route = "home"
@@ -72,7 +75,9 @@ fun HomeScreen (
     val personalUiState by viewModel.personalTasks.collectAsState()
     val workUiState by viewModel.workTasks.collectAsState()
     val shoppingUiState by viewModel.shoppingTasks.collectAsState()
-
+    LaunchedEffect(key1 = viewModel.allTasks) {
+        viewModel.todayTask = viewModel.getTaskByDate(Date(System.currentTimeMillis()).toString())
+    }
     Scaffold(
         bottomBar = {
             BottomAppBar(
@@ -112,7 +117,10 @@ fun HomeScreen (
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.sun_transparent),
                     title = stringResource(id = R.string.today_title),
-                    amountOfTasks = allTasks.tasks.size,
+                    amountOfTasks = allTasks.tasks.filter {task ->
+                        val date = Date(System.currentTimeMillis())
+                        date.toString() == localDateTimeToDate(task.dateBegin).toString()
+                    }.size,
                     modifier = Modifier.fillMaxWidth(),
                     navigateToDetail = navigateToToday
                 )

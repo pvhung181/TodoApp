@@ -32,7 +32,7 @@ data class Task(
     val description: String,
 
     @ColumnInfo(name = "is_completed")
-    val isCompleted: Boolean,
+    var isCompleted: Boolean,
 
     @ColumnInfo(name = "date_created")
     val dateCreated: java.sql.Date,

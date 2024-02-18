@@ -1,5 +1,6 @@
 package vn.tutorial.todolist.util
 
+import java.sql.Date
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Locale
@@ -13,6 +14,9 @@ fun prettierTime(hour: String, minute: String): String {
             if(minute.length == 1) minute.padStart(2, '0') else minute
 }
 
+fun localDateTimeToDate(l: LocalDateTime): Date {
+    return Date.valueOf(l.toLocalDate().toString())
+}
 fun compareLocalDate(l1: LocalDateTime, l2: LocalDateTime) {
     l1.compareTo(l2)
 }
