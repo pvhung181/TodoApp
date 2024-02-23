@@ -8,19 +8,20 @@ import androidx.room.TypeConverters
 import vn.tutorial.todolist.converter.DateConverter
 import vn.tutorial.todolist.data.dao.CategoryDao
 import vn.tutorial.todolist.data.dao.TaskDao
+import vn.tutorial.todolist.data.dao.UserDao
 import vn.tutorial.todolist.model.Category
 import vn.tutorial.todolist.model.Task
 import vn.tutorial.todolist.model.User
 
 @Database(entities = [Category::class, Task::class, User::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun getTaskDao(): TaskDao
     abstract fun getCategoryDao(): CategoryDao
-
+    abstract fun getUserDao(): UserDao
     companion object {
         @Volatile
         private var Instance: TodoDatabase ?= null

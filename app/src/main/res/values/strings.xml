@@ -15,7 +15,9 @@
     <string name="home_title">Home</string>
     <string name="setting_title">Settings</string>
     <string name="add_title">Add tasks</string>
-
+    <string name="user_info">User Information</string>
+    <string name="profile">Profile</string>
+    <string name="start">Start</string>
 <!--    Category title-->
     <string name="personal_title">Personal</string>
     <string name="work_title">Work</string>
@@ -23,4 +25,9 @@
     <string name="today_title">Today</string>
     <string name="planned_title">Planned</string>
     <string name="detail">Detail</string>
+
+
+    <string name="task_completed">Completed : %s</string>
+    <string name="task_coming">Coming : %s</string>
+    <string name="total_tasks">Total : %s</string>
 </resources>

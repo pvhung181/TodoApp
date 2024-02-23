@@ -5,11 +5,14 @@ import vn.tutorial.todolist.data.repository.CategoryRepository
 import vn.tutorial.todolist.data.repository.CategoryRepositoryImpl
 import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.TaskRepositoryImpl
+import vn.tutorial.todolist.data.repository.UserRepository
+import vn.tutorial.todolist.data.repository.UserRepositoryImpl
 
 interface Container {
     val taskRepository: TaskRepository
     val categoryRepository: CategoryRepository
     val dataStoreManager: DataStoreManager
+    val userRepository: UserRepository
 }
 
 class DefaultContainer(
@@ -28,6 +31,11 @@ class DefaultContainer(
     }
     override val dataStoreManager: DataStoreManager by lazy {
         DataStoreManager(context)
+    }
+    override val userRepository: UserRepository by lazy {
+        UserRepositoryImpl(
+            userDao = TodoDatabase.getDatabase(context).getUserDao()
+        )
     }
 
 }

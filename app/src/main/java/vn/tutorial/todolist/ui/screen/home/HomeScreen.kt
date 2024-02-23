@@ -18,7 +18,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -75,9 +77,8 @@ fun HomeScreen (
     val personalUiState by viewModel.personalTasks.collectAsState()
     val workUiState by viewModel.workTasks.collectAsState()
     val shoppingUiState by viewModel.shoppingTasks.collectAsState()
-    LaunchedEffect(key1 = viewModel.allTasks) {
-        viewModel.todayTask = viewModel.getTaskByDate(Date(System.currentTimeMillis()).toString())
-    }
+    val user by viewModel.user.collectAsState()
+
     Scaffold(
         bottomBar = {
             BottomAppBar(
@@ -108,7 +109,7 @@ fun HomeScreen (
 
             Column {
                 UserInformation(
-                    userName = "pvhung181",
+                    userName = user.fullName,
                     amountOfTasks = allTasks.tasks.size
                 )
 

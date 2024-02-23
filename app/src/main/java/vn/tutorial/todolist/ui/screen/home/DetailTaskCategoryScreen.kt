@@ -54,6 +54,9 @@ import vn.tutorial.todolist.ui.screen.add.TopAppBar
 import vn.tutorial.todolist.util.localDateTimeToDate
 import vn.tutorial.todolist.util.prettierLocalDateTime
 import java.sql.Date
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 object DetailTaskCategory : NavigationDestination {
@@ -101,16 +104,31 @@ fun DetailTaskCategoryScreen(
                 }
             },
             onCheckChange = { v, t ->
-                coroutineScope.launch {
-                    viewModel.updateTask(t.copy(isCompleted = v))
+                if(!t.dateEnd.isBefore(LocalDateTime.now())) {
+                    coroutineScope.launch {
+                        viewModel.updateTask(t.copy(isCompleted = v))
+                    }
                 }
             }
 
         )
 
-        CategoryTitle.PLANNED.title -> PlannedCategoryScreen(
+        CategoryTitle.PLANNED.title -> CategoryDetailScreen(
             title = CategoryTitle.PLANNED.title,
-            navigateBack = navigateBack
+            navigateBack = navigateBack,
+            tasks = allTasks.value.tasks,
+            onDelete = { task ->
+                coroutineScope.launch {
+                    viewModel.deleteTask(task)
+                }
+            },
+            onCheckChange = { v, t ->
+                if(!t.dateEnd.isBefore(LocalDateTime.now())) {
+                    coroutineScope.launch {
+                        viewModel.updateTask(t.copy(isCompleted = v))
+                    }
+                }
+            }
         )
 
         else -> CategoryDetailScreen(
@@ -127,8 +145,10 @@ fun DetailTaskCategoryScreen(
                 }
             },
             onCheckChange = { v, t ->
-                coroutineScope.launch {
-                    viewModel.updateTask(t.copy(isCompleted = v))
+                if(!t.dateEnd.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)))) {
+                    coroutineScope.launch {
+                        viewModel.updateTask(t.copy(isCompleted = v))
+                    }
                 }
             }
         )
@@ -163,7 +183,9 @@ fun CategoryDetailScreen(
         }
     ) {
         Column(
-            modifier = modifier.padding(it),
+            modifier = modifier
+                .padding(it)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -232,7 +254,10 @@ fun CategoryDetailScreen(
                 }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                showModeToggle = false
+            )
         }
     }
 }

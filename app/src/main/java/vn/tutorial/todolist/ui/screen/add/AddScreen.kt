@@ -40,6 +40,7 @@ import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,10 +62,12 @@ import vn.tutorial.todolist.model.Category
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.util.dateFormatter
+import vn.tutorial.todolist.util.miliToLocalDate
 import vn.tutorial.todolist.util.prettierTime
 import java.sql.Date
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 
 object AddScreen : NavigationDestination {
@@ -81,9 +84,9 @@ fun AddScreen(
     ),
     modifier: Modifier = Modifier
 ) {
-
     val coroutineScope = rememberCoroutineScope()
     val taskUiState = viewModel.taskUiState
+    val user by viewModel.user.collectAsState()
 
     val startDatePickerState: DatePickerState = rememberDatePickerState(
         initialSelectedDateMillis = System.currentTimeMillis()
@@ -155,7 +158,6 @@ fun AddScreen(
                             dateBegin = LocalDateTime.of(dateBegin.year, dateBegin.monthValue, dateBegin.dayOfMonth,
                                 startTimePickerState.hour, startTimePickerState.minute
                             )
-
                         )
                     )
                 },
@@ -198,10 +200,22 @@ fun AddScreen(
                 onClick = {
                     coroutineScope.launch {
                         viewModel.saveTask(taskUiState.taskDetails.toTask())
+                        viewModel.updateUser(
+                            user.copy(
+                                totalTasks = user.totalTasks + 1,
+                                comingTasks = user.comingTasks + 1
+                            )
+                        )
                         navigateBack()
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
+                enabled = viewModel.validateDate(
+                    startDate = miliToLocalDate(startDatePickerState.selectedDateMillis!!),
+                    endDate = miliToLocalDate(endDatePickerState.selectedDateMillis!!),
+                    startTime = LocalTime.of(startTimePickerState.hour, startTimePickerState.minute),
+                    endTime = LocalTime.of(endTimePickerState.hour, endTimePickerState.minute)
+                ) && viewModel.isValid()
             ) {
                 Text(text = "Save task")
             }
@@ -255,7 +269,10 @@ fun DateTimePickerUi(
                 }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                showModeToggle = false
+            )
         }
     }
 

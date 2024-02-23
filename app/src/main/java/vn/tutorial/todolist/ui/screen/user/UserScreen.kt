@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -48,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import vn.tutorial.todolist.R
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
@@ -59,18 +61,22 @@ object SettingScreen : NavigationDestination {
     override val titleRes = R.string.setting_title
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
     navigateToHome: () -> Unit,
     navigateToAdd: () -> Unit,
     navigateToSetting: () -> Unit,
     navigateToAbout: () -> Unit,
+    navigateToProfile: () -> Unit,
     viewModel: SettingScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier
 ) {
 
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+    val user by viewModel.user.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         bottomBar = {
@@ -98,13 +104,13 @@ fun UserScreen(
             )
 
             Text(
-                text = "User Name",
-                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
-
+                text = user.fullName,
+                modifier = Modifier
+                    .padding(top = 8.dp, bottom = 8.dp)
                 )
 
 
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick =  navigateToProfile) {
                 Text(
                     text = "Edit profile",
                     modifier = Modifier.padding(end = 16.dp)
@@ -133,6 +139,14 @@ fun UserScreen(
                     .fillMaxWidth()
                     .padding(top = 8.dp, bottom = 8.dp)
             )
+
+            Card(onClick = {
+                coroutineScope.launch {
+                    viewModel.dataStoreManager.clearDatastore()
+                }
+            }) {
+                Text(text = "Clear datastore")
+            }
         }
     }
 }
@@ -329,6 +343,6 @@ fun UserScreenPreview(
     modifier: Modifier = Modifier
 ) {
     UserScreen(
-        {},{},{},{}
+        {},{},{},{},{}
     )
 }

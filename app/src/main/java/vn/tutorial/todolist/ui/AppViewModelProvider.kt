@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import vn.tutorial.todolist.TodoApplication
 import vn.tutorial.todolist.ui.screen.add.AddTaskViewModel
 import vn.tutorial.todolist.ui.screen.home.HomeViewModel
+import vn.tutorial.todolist.ui.screen.start.StartViewModel
 import vn.tutorial.todolist.ui.screen.user.SettingScreenViewModel
 
 object AppViewModelProvider {
@@ -14,19 +15,31 @@ object AppViewModelProvider {
         initializer {
             HomeViewModel(
                 taskRepository = todoApplication().container.taskRepository,
-                categoryRepository = todoApplication().container.categoryRepository
+                categoryRepository = todoApplication().container.categoryRepository,
+                userRepository = todoApplication().container.userRepository
             )
         }
 
         initializer {
             SettingScreenViewModel(
-                dataStoreManager = todoApplication().container.dataStoreManager
+                dataStoreManager = todoApplication().container.dataStoreManager,
+                userRepository = todoApplication().container.userRepository
+
             )
         }
 
         initializer {
             AddTaskViewModel(
-                taskRepository = todoApplication().container.taskRepository
+                taskRepository = todoApplication().container.taskRepository,
+                userRepository = todoApplication().container.userRepository
+            )
+        }
+
+        initializer {
+            StartViewModel(
+                userRepository = todoApplication().container.userRepository,
+                categoryRepository = todoApplication().container.categoryRepository,
+                dataStoreManager = todoApplication().container.dataStoreManager
             )
         }
     }

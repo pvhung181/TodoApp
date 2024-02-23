@@ -8,6 +8,8 @@ interface CategoryRepository {
     suspend fun getALlCategoriesStream(): List<Category>
 
     suspend fun getCategoryByIdStream(id: Int) : Category
+
+    suspend fun insert(ct: Category)
 }
 
 class CategoryRepositoryImpl(
@@ -19,6 +21,10 @@ class CategoryRepositoryImpl(
 
     override suspend fun getCategoryByIdStream(id: Int): Category {
         return categoryDao.getCategoryById(id)
+    }
+
+    override suspend fun insert(ct: Category) {
+        categoryDao.insert(ct)
     }
 
 }

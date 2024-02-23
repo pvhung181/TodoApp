@@ -2,7 +2,10 @@ package vn.tutorial.todolist.util
 
 import java.sql.Date
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Locale
 
 fun prettierLocalDateTime(date: LocalDateTime): String {
@@ -17,6 +20,11 @@ fun prettierTime(hour: String, minute: String): String {
 fun localDateTimeToDate(l: LocalDateTime): Date {
     return Date.valueOf(l.toLocalDate().toString())
 }
+
+fun miliToLocalDate(l: Long): LocalDate {
+    return Instant.ofEpochMilli(l).atZone(ZoneId.systemDefault()).toLocalDate()
+}
+
 fun compareLocalDate(l1: LocalDateTime, l2: LocalDateTime) {
     l1.compareTo(l2)
 }

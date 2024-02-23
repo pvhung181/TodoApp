@@ -1,30 +1,32 @@
 package vn.tutorial.todolist.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import vn.tutorial.todolist.R
 import vn.tutorial.todolist.ui.screen.about.AboutScreen
 import vn.tutorial.todolist.ui.screen.add.AddScreen
 import vn.tutorial.todolist.ui.screen.home.CategoryTitle
 import vn.tutorial.todolist.ui.screen.home.DetailTaskCategory
 import vn.tutorial.todolist.ui.screen.home.DetailTaskCategoryScreen
 import vn.tutorial.todolist.ui.screen.home.HomeScreen
-import vn.tutorial.todolist.ui.screen.home.HomeViewModel
+import vn.tutorial.todolist.ui.screen.start.CollectUserInfoScreen
+import vn.tutorial.todolist.ui.screen.start.StartScreen
+import vn.tutorial.todolist.ui.screen.start.UserCollectionScreen
+import vn.tutorial.todolist.ui.screen.user.ProfileScreen
 import vn.tutorial.todolist.ui.screen.user.SettingScreen
 import vn.tutorial.todolist.ui.screen.user.UserScreen
 
 @Composable
 fun TodoNavHost(
-    navController: NavHostController
+    navController: NavHostController,
+    isFirstTime: Boolean
 ) {
     NavHost(
         navController = navController,
-        startDestination = HomeScreen.route
+        startDestination = if(isFirstTime) StartScreen.route else HomeScreen.route
     ) {
         composable(HomeScreen.route) {
             HomeScreen(
@@ -85,6 +87,9 @@ fun TodoNavHost(
                 },
                 navigateToAbout = {
                     navController.navigate(AboutScreen.route)
+                },
+                navigateToProfile = {
+                    navController.navigate(ProfileScreen.route)
                 }
             )
         }
@@ -100,6 +105,34 @@ fun TodoNavHost(
                 title = it.arguments?.getString("categoryTitle") ?: "Error"
             )
         }
+
+        composable(UserCollectionScreen.route) {
+            CollectUserInfoScreen(
+                navigateToHome = {
+                    navController.navigate(HomeScreen.route)
+                },
+                navigateUp = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable(ProfileScreen.route) {
+            ProfileScreen(
+                navigateUp = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
+        composable(StartScreen.route) {
+            StartScreen (
+                navigateToUserInfoCollection = {
+                    navController.navigate(UserCollectionScreen.route)
+                }
+            )
+        }
+
 
     }
 }
