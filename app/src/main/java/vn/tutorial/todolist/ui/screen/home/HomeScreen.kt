@@ -1,7 +1,13 @@
 package vn.tutorial.todolist.ui.screen.home
 
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,13 +45,17 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import vn.tutorial.todolist.R
+import vn.tutorial.todolist.model.User
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.screen.user.SettingScreen
@@ -79,6 +89,7 @@ fun HomeScreen (
     val shoppingUiState by viewModel.shoppingTasks.collectAsState()
     val user by viewModel.user.collectAsState()
 
+
     Scaffold(
         bottomBar = {
             BottomAppBar(
@@ -109,7 +120,7 @@ fun HomeScreen (
 
             Column {
                 UserInformation(
-                    userName = user.fullName,
+                    user = user,
                     amountOfTasks = allTasks.tasks.size
                 )
 
@@ -166,6 +177,56 @@ fun HomeScreen (
 
 
 @Composable
+fun UserInformation(
+    user: User,
+    amountOfTasks: Int,
+    modifier: Modifier = Modifier
+) {
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 48.dp),
+        horizontalArrangement = Arrangement.Absolute.SpaceAround
+    ){
+        Column {
+            Text(
+                text = stringResource(id = R.string.hello_user, user.fullName),
+                style = MaterialTheme.typography.displayMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.padding(bottom = 6.dp)
+            )
+
+            Text(
+                text = stringResource(id = R.string.tasks_today, amountOfTasks),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+
+        Log.e("AsyncImage", user.avatar)
+        Log.e("AsyncImage", user.avatar.length.toString())
+
+//            Log.e("AsyncImage", "In asysn")
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(Uri.parse(user.avatar))
+                    .placeholder(R.drawable.default_avatar)
+                    .error(R.drawable.sample_avatar)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = null,
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(100.dp)
+                    .clip(shape = Shapes.small),
+                contentScale = ContentScale.Crop,
+            )
+
+
+    }
+}
+
+@Composable
 fun CategoryTaskItem(
     image: Painter,
     title: String,
@@ -219,45 +280,6 @@ fun CategoryTaskItem(
     }
 }
 
-@Composable
-fun UserInformation(
-    userName: String,
-    amountOfTasks: Int,
-    modifier: Modifier = Modifier
-) {
-    Row (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 48.dp),
-        horizontalArrangement = Arrangement.Absolute.SpaceAround
-    ){
-        Column {
-            Text(
-                text = stringResource(id = R.string.hello_user, userName),
-                style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.padding(bottom = 6.dp)
-            )
-
-            Text(
-                text = stringResource(id = R.string.tasks_today, amountOfTasks),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
-
-        Image(
-            painter = painterResource(id = R.drawable.sample_avatar),
-            contentDescription = null,
-            modifier = Modifier
-                .width(100.dp)
-                .height(100.dp)
-                .clip(shape = Shapes.small),
-            contentScale = ContentScale.Crop
-        )
-
-    }
-}
 
 
 @Composable

@@ -1,5 +1,9 @@
 package vn.tutorial.todolist.ui.screen.start
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,8 +11,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -37,17 +43,23 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import vn.tutorial.todolist.R
 import vn.tutorial.todolist.data.getCategory
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
+import vn.tutorial.todolist.ui.theme.Shapes
 import vn.tutorial.todolist.util.miliToLocalDate
 import java.sql.Date
 
@@ -129,6 +141,18 @@ fun CollectUserInfoScreen(
         mutableLongStateOf(System.currentTimeMillis())
     }
 
+    val photoPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        if(it != null) {
+            viewModel.updateUiState(
+                uiState.userInfo.copy(
+                    avatar = it.toString()
+                )
+            )
+        }
+    }
+
     Scaffold(
         topBar = {
             Row(
@@ -151,6 +175,36 @@ fun CollectUserInfoScreen(
                 .padding(it)
                 .padding(8.dp)
         ) {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(Uri.parse(uiState.userInfo.avatar))
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp)
+                        .clip(shape = Shapes.small)
+                        .clickable {
+                            photoPicker.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
+                            )
+                        },
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.default_avatar)
+                )
+            }
+
+            Text(text = uiState.userInfo.avatar)
 
             OutlinedTextFieldWithLeadingIcons(
                 value = uiState.userInfo.userName,
@@ -207,7 +261,7 @@ fun CollectUserInfoScreen(
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {
-                               openDialog = true
+                        openDialog = true
                     },
                 isReadonly = true,
                 isMandatory = true,
@@ -396,7 +450,8 @@ fun OutlinedTextFieldWithLeadingIcons(
             Text(
                 text = "*",
                 color = Color.Red,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier
+                    .size(36.dp)
                     .padding(start = 8.dp)
             )
         }
