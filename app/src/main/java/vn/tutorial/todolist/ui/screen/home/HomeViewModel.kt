@@ -2,11 +2,13 @@ package vn.tutorial.todolist.ui.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import vn.tutorial.todolist.data.repository.CategoryRepository
 import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.UserRepository
@@ -45,6 +47,7 @@ class HomeViewModel(
         ))
 
     suspend fun deleteTask(task: Task) {
+
             taskRepository.deleteTask(task)
     }
 

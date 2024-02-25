@@ -1,5 +1,6 @@
 package vn.tutorial.todolist.ui.screen.start
 
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -140,11 +141,16 @@ fun CollectUserInfoScreen(
     var previousSelectedDate by remember {
         mutableLongStateOf(System.currentTimeMillis())
     }
+    val context = LocalContext.current
+
+
 
     val photoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) {
         if(it != null) {
+            context.contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
             viewModel.updateUiState(
                 uiState.userInfo.copy(
                     avatar = it.toString()
@@ -194,10 +200,9 @@ fun CollectUserInfoScreen(
                         .clip(shape = Shapes.small)
                         .clickable {
                             photoPicker.launch(
-                                PickVisualMediaRequest(
-                                    ActivityResultContracts.PickVisualMedia.ImageOnly
-                                )
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
+
                         },
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable.default_avatar)

@@ -203,8 +203,8 @@ fun UserInformation(
             )
         }
 
-        Log.e("AsyncImage", user.avatar)
-        Log.e("AsyncImage", user.avatar.length.toString())
+//        Log.e("AsyncImage", user.avatar)
+//        Log.e("AsyncImage", user.avatar.length.toString())
 
 //            Log.e("AsyncImage", "In asysn")
             AsyncImage(
@@ -220,6 +220,9 @@ fun UserInformation(
                     .height(100.dp)
                     .clip(shape = Shapes.small),
                 contentScale = ContentScale.Crop,
+                onError = {
+                    Log.e("AsyncImage", it.result.throwable.message.toString())
+                }
             )
 
 
