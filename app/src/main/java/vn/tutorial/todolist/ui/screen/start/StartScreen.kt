@@ -58,6 +58,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import vn.tutorial.todolist.R
 import vn.tutorial.todolist.data.getCategory
+import vn.tutorial.todolist.service.NotificationService
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.theme.Shapes
@@ -143,7 +144,8 @@ fun CollectUserInfoScreen(
     }
     val context = LocalContext.current
 
-
+    //val postNotificationPermission = rememberPer
+    val todoNotificationService = NotificationService(context)
 
     val photoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -208,8 +210,7 @@ fun CollectUserInfoScreen(
                     placeholder = painterResource(id = R.drawable.default_avatar)
                 )
             }
-
-            Text(text = uiState.userInfo.avatar)
+            
 
             OutlinedTextFieldWithLeadingIcons(
                 value = uiState.userInfo.userName,
@@ -364,7 +365,7 @@ fun CollectUserInfoScreen(
                     }
 
                     viewModel.updateVisitedUser()
-
+                    todoNotificationService.showBasicNotification("Welcome to todoapp ")
                     navigateToHome()
                 }) {
                 Text(text = "Done")
