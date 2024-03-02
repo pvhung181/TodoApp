@@ -144,7 +144,6 @@ fun CollectUserInfoScreen(
     }
     val context = LocalContext.current
 
-    //val postNotificationPermission = rememberPer
     val todoNotificationService = NotificationService(context)
 
     val photoPicker = rememberLauncherForActivityResult(

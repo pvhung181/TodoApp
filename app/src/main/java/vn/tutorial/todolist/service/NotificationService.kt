@@ -21,6 +21,7 @@ class NotificationService(
             .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
             .setAutoCancel(true)
             .build()
+
         notificationManager.notify(
             Random.nextInt(),
             notification

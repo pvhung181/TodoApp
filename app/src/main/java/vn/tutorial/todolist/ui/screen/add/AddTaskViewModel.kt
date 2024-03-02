@@ -1,5 +1,6 @@
 package vn.tutorial.todolist.ui.screen.add
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.UserRepository
+import vn.tutorial.todolist.data.repository.WorManagerNotificationRepository
 import vn.tutorial.todolist.model.Task
 import vn.tutorial.todolist.model.User
 import java.sql.Date
@@ -50,7 +52,8 @@ fun TaskDetails.toTask(): Task = Task(
 
 class AddTaskViewModel(
     val taskRepository: TaskRepository,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    private val worManagerNotificationRepository: WorManagerNotificationRepository
 ) : ViewModel() {
     var taskUiState by mutableStateOf(TaskUiState())
         private set
@@ -66,6 +69,10 @@ class AddTaskViewModel(
             return true
         }
         return false
+    }
+
+    fun addNotification(content: String, start: LocalDateTime) {
+        worManagerNotificationRepository.setWorkRequest(content, start)
     }
 
     fun isValid(taskDetails: TaskDetails = taskUiState.taskDetails): Boolean {

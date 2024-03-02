@@ -31,7 +31,8 @@ object AppViewModelProvider {
         initializer {
             AddTaskViewModel(
                 taskRepository = todoApplication().container.taskRepository,
-                userRepository = todoApplication().container.userRepository
+                userRepository = todoApplication().container.userRepository,
+                worManagerNotificationRepository = todoApplication().container.workManagerNotificationRepository
             )
         }
 

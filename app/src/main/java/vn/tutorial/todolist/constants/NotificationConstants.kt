@@ -1,5 +1,8 @@
 package vn.tutorial.todolist.constants
 
-public const val CHANNEL_ID: String = "task_notification"
-public const val CHANNEL_NAME: String = "todoapp"
-public const val CHANNEL_DESCRIPTION: String = "notify coming task"
+const val CHANNEL_ID: String = "task_notification"
+const val CHANNEL_NAME: String = "todoapp"
+const val CHANNEL_DESCRIPTION: String = "notify coming task"
+
+const val NOTIFICATION_TITLE: String = "Task Reminder"
+const val NOTIFICATION_CONTENT: String = "notification_content"

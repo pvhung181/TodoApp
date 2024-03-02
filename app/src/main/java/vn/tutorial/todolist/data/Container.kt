@@ -7,12 +7,14 @@ import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.TaskRepositoryImpl
 import vn.tutorial.todolist.data.repository.UserRepository
 import vn.tutorial.todolist.data.repository.UserRepositoryImpl
+import vn.tutorial.todolist.data.repository.WorManagerNotificationRepository
 
 interface Container {
     val taskRepository: TaskRepository
     val categoryRepository: CategoryRepository
     val dataStoreManager: DataStoreManager
     val userRepository: UserRepository
+    val workManagerNotificationRepository: WorManagerNotificationRepository
 }
 
 class DefaultContainer(
@@ -37,5 +39,7 @@ class DefaultContainer(
             userDao = TodoDatabase.getDatabase(context).getUserDao()
         )
     }
+    override val workManagerNotificationRepository: WorManagerNotificationRepository
+        get() = WorManagerNotificationRepository(context)
 
 }

@@ -206,6 +206,12 @@ fun AddScreen(
                                 comingTasks = user.comingTasks + 1
                             )
                         )
+                        viewModel.addNotification(
+                            content = taskUiState.taskDetails.title,
+                            start = LocalDateTime.of(
+                                miliToLocalDate(startDatePickerState.selectedDateMillis!!),
+                                LocalTime.of(startTimePickerState.hour, startTimePickerState.minute))
+                        )
                         navigateBack()
                     }
                 },
