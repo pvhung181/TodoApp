@@ -23,6 +23,10 @@ class WorManagerNotificationRepository(context: Context) {
         workManager.enqueue(request)
     }
 
+    fun cancelWorkRequest() {
+
+    }
+
     private fun createInputDataForNotification(content: String): Data {
         val builder = Data.Builder()
         builder.putString(NOTIFICATION_CONTENT, content)

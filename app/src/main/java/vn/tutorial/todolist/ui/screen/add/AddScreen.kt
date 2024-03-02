@@ -33,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -45,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,6 +102,10 @@ fun AddScreen(
     val endTimePickerState = rememberTimePickerState(
         initialHour = 0, initialMinute = 0, is24Hour = true
     )
+
+    var notify by rememberSaveable {
+        mutableStateOf(true)
+    }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -195,6 +201,19 @@ fun AddScreen(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Switch(
+                    checked = notify,
+                    onCheckedChange = {notify = !notify},
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "Receive notification for this task")
+            }
+
+            Spacer(modifier = Modifier.padding(16.dp))
 
             Button(
                 onClick = {
@@ -206,12 +225,14 @@ fun AddScreen(
                                 comingTasks = user.comingTasks + 1
                             )
                         )
-                        viewModel.addNotification(
-                            content = taskUiState.taskDetails.title,
-                            start = LocalDateTime.of(
-                                miliToLocalDate(startDatePickerState.selectedDateMillis!!),
-                                LocalTime.of(startTimePickerState.hour, startTimePickerState.minute))
-                        )
+                        if(notify) {
+                            viewModel.addNotification(
+                                content = taskUiState.taskDetails.title,
+                                start = LocalDateTime.of(
+                                    miliToLocalDate(startDatePickerState.selectedDateMillis!!),
+                                    LocalTime.of(startTimePickerState.hour, startTimePickerState.minute))
+                            )
+                        }
                         navigateBack()
                     }
                 },
