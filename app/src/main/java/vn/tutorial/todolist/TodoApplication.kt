@@ -29,5 +29,7 @@ class TodoApplication : Application() {
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChanel);
+
+
     }
 }

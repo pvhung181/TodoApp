@@ -160,26 +160,6 @@ fun UserScreen(
     }
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun AlertDialogForSwitch(
-//    onDismiss: () -> Unit,
-//    title: @Composable () -> Unit,
-//    text: @Composable () -> Unit,
-//    confirmButton: @Composable () -> Unit,
-//    dismissButton: @Composable () -> Unit,
-//    modifier: Modifier = Modifier
-//) {
-//
-//    AlertDialog(
-//        onDismissRequest = onDismiss,
-//        confirmButton = confirmButton,
-//        dismissButton = dismissButton,
-//        title = title,
-//        text = text
-//    )
-//}
-
 
 @Composable
 fun Settings(

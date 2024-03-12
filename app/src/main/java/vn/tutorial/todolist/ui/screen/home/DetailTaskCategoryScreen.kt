@@ -107,6 +107,8 @@ fun DetailTaskCategoryScreen(
                 if(!t.dateEnd.isBefore(LocalDateTime.now())) {
                     coroutineScope.launch {
                         viewModel.updateTask(t.copy(isCompleted = v))
+
+
                     }
                 }
             }

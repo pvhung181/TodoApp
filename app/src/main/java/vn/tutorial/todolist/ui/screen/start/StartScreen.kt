@@ -102,6 +102,7 @@ fun StartScreen(
         if(!postNotificationPermissions.status.isGranted) {
             postNotificationPermissions.launchPermissionRequest()
         }
+
     }
 
     Scaffold {
@@ -162,7 +163,7 @@ fun CollectUserInfoScreen(
     }
     val context = LocalContext.current
 
-    val todoNotificationService = NotificationService(context)
+
 
     val photoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -374,6 +375,7 @@ fun CollectUserInfoScreen(
                             getCategory().forEach { category ->
                                 viewModel.insertCategories(category)
                             }
+
                         }
 
                         coroutineScope.launch {
@@ -382,7 +384,8 @@ fun CollectUserInfoScreen(
                     }
 
                     viewModel.updateVisitedUser()
-                    todoNotificationService.showBasicNotification("Welcome to todoapp ")
+                    viewModel.todoNotificationService.showBasicNotification("Welcome to todoapp ")
+                    viewModel.autoSyncManagerRepository.setWorkRequest()
                     navigateToHome()
                 }) {
                 Text(text = "Done")

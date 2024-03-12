@@ -16,8 +16,13 @@ interface TaskDao {
     @Query("select * from task where user_id = 1")
     fun getAllTask(): Flow<List<Task>>
 
+    @Query("select * from task where user_id = 1")
+    fun getAllTasksNotTracking(): List<Task>
+
     @Query("select * from task where task_id = :id")
     fun getTaskById(id: Int): Flow<Task>
+
+
 
     @Query("select * from task where category_id = :categoryId")
     fun getTaskByCategoryId(categoryId: Int): Flow<List<Task>>

@@ -30,6 +30,8 @@
     <string name="task_completed">Completed : %s</string>
     <string name="task_coming">Coming : %s</string>
     <string name="total_tasks">Total : %s</string>
+    <string name="notCompleted_tasks">Not Completed : %s</string>
+    <string name="ongoing_tasks">Ongoing : %s</string>
 
 
     <string name="author_email">pvhung181@gmail.com</string>

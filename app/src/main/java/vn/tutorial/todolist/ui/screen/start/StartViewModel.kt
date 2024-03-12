@@ -1,14 +1,17 @@
 package vn.tutorial.todolist.ui.screen.start
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import vn.tutorial.todolist.data.DataStoreManager
+import vn.tutorial.todolist.data.repository.AutoSyncManagerRepository
 import vn.tutorial.todolist.data.repository.CategoryRepository
 import vn.tutorial.todolist.data.repository.UserRepository
 import vn.tutorial.todolist.model.Category
 import vn.tutorial.todolist.model.User
+import vn.tutorial.todolist.service.NotificationService
 import vn.tutorial.todolist.util.miliToLocalDate
 import java.sql.Date
 import java.time.LocalDate
@@ -30,7 +33,9 @@ data class UserInfo(
 class StartViewModel(
     val userRepository: UserRepository,
     val categoryRepository: CategoryRepository,
-    val dataStoreManager: DataStoreManager
+    val dataStoreManager: DataStoreManager,
+    val todoNotificationService: NotificationService,
+    val autoSyncManagerRepository: AutoSyncManagerRepository
 ) : ViewModel() {
 
     companion object {

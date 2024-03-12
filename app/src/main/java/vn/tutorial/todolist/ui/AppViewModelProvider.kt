@@ -40,7 +40,9 @@ object AppViewModelProvider {
             StartViewModel(
                 userRepository = todoApplication().container.userRepository,
                 categoryRepository = todoApplication().container.categoryRepository,
-                dataStoreManager = todoApplication().container.dataStoreManager
+                dataStoreManager = todoApplication().container.dataStoreManager,
+                todoNotificationService = todoApplication().container.todoNotificationService,
+                autoSyncManagerRepository = todoApplication().container.autoSyncManagerRepository
             )
         }
     }

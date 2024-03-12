@@ -44,9 +44,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
@@ -167,10 +169,17 @@ fun ProfileScreen(
                         modifier = Modifier.padding(8.dp)
                     )
 
-                    Column {
-                        Text(text = stringResource(id = R.string.total_tasks, 1))
-                        Text(text = stringResource(id = R.string.task_completed, 2))
-                        Text(text = stringResource(id = R.string.task_coming, 3))
+                    Column(
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text(
+                            text = "* Tasks will be updated at midnight",
+                            fontSize = 12.sp,
+                            fontStyle = FontStyle.Italic
+                        )
+                        Text(text = stringResource(id = R.string.total_tasks, user.totalTasks))
+                        Text(text = stringResource(id = R.string.task_completed, user.completedTasks))
+                        Text(text = stringResource(id = R.string.task_coming, user.comingTasks))
                     }
 
                     OutlinedTextFieldWithLeadingIcons(
