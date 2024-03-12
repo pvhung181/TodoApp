@@ -1,23 +1,20 @@
 package vn.tutorial.todolist.ui.screen.user
 
-import android.app.Activity
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -32,17 +29,16 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ShareCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -192,7 +189,11 @@ fun Settings(
     modifier: Modifier = Modifier
 ) {
 
+    val context = LocalContext.current
 
+    var showDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     Column {
         Card (
@@ -204,16 +205,8 @@ fun Settings(
                 checked = uiState.isDarkTheme,
                 onCheckedChange = onSelectedThemeChange,
                 onClick = {
-
+                    showDialog = true
                 }
-            )
-
-            SwitchSettingItem(
-                icon = painterResource(id = R.drawable.notifications_active_24),
-                title = stringResource(id = R.string.notification),
-                checked = false,
-                onCheckedChange = {},
-                onClick = {}
             )
 
         }
@@ -226,7 +219,15 @@ fun Settings(
             GotoSettingItem(
                 icon = painterResource(id = R.drawable.mail_24),
                 title = stringResource(id = R.string.send_us_a_message),
-                navigate = {},
+                navigate = {
+                      ShareCompat.IntentBuilder(context)
+                          .setType("message/rfc822")
+                          .addEmailTo("pvhung181@gmail.com")
+                          .setSubject("Report about TodoApp")
+                          .setText("")
+                          .setChooserTitle("Choose an app to send email")
+                          .startChooser();
+                },
                 modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
             )
 
@@ -250,6 +251,23 @@ fun Settings(
             )
         }
     }
+
+    if(showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = { 
+                TextButton(onClick = { showDialog = false }) {
+                    Text(text = "Ok")
+                }
+            },
+            title = {
+                Text(text = "Inform")
+            },
+            text = {
+                Text(text = "The mode will be applied the next time you open")
+            }
+        )
+    }
 }
 
 @Composable
@@ -261,6 +279,7 @@ fun SwitchSettingItem(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
 
     Row (
         modifier = modifier
@@ -280,38 +299,29 @@ fun SwitchSettingItem(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            modifier = modifier
-                .padding(start = 8.dp, end = 8.dp)
+
+
+        Box(
+            contentAlignment = Alignment.CenterEnd
+        ) {
+
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange,
+                modifier = modifier
+                    .padding(start = 8.dp, end = 8.dp)
+            )
+
+            Spacer(modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
                 .clickable {
+                    onCheckedChange(!checked)
                     onClick()
-                }
-        )
+                })
+        }
 
     }
-//    if(showDialog) {
-//        AlertDialogForSwitch(
-//            onDismiss = onDismiss,
-//            title = {
-//                Text(text = "Inform")
-//            },
-//            text = {
-//                Text(text = "The mode will be applied after restarting the application")
-//            },
-//            confirmButton = {
-//                TextButton(onClick = {
-//                    context.startActivity(restartIntent)
-//                    Runtime.getRuntime().exit(0)
-//                }) {
-//                    Text(text = "Restart")
-//                }
-//            },
-//            dismissButton = {
-//                Text(text = "Later")
-//            })
-//    }
 }
 
 @Composable

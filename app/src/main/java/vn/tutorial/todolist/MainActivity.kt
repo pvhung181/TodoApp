@@ -18,7 +18,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         dataStoreManager = DataStoreManager(this)
 
-
         setContent {
             TodoListTheme(
                 darkTheme = dataStoreManager.getValueDarkTheme()

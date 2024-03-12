@@ -18,6 +18,7 @@ class TodoApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         container = DefaultContainer(this)
+
         val notificationChanel = NotificationChannel(
             CHANNEL_ID,
             CHANNEL_NAME,

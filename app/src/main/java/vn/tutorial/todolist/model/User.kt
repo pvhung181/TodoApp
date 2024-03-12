@@ -16,6 +16,9 @@ data class User(
     @ColumnInfo(name = "avatar")
     val avatar: String,
 
+    @ColumnInfo(name = "email")
+    val email: String,
+
     @ColumnInfo(name = "birth_day")
     val birthDay: java.sql.Date,
 

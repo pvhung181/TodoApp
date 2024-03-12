@@ -68,6 +68,7 @@ import vn.tutorial.todolist.util.miliToLocalDate
 import vn.tutorial.todolist.util.prettierTime
 import java.sql.Date
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -91,13 +92,13 @@ fun AddScreen(
     val user by viewModel.user.collectAsState()
 
     val startDatePickerState: DatePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = System.currentTimeMillis()
+        initialSelectedDateMillis = Instant.now().toEpochMilli()
     )
     val startTimePickerState = rememberTimePickerState(
         initialHour = 0, initialMinute = 0, is24Hour = true
     )
     val endDatePickerState: DatePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = System.currentTimeMillis()
+        initialSelectedDateMillis = Instant.now().toEpochMilli()
     )
     val endTimePickerState = rememberTimePickerState(
         initialHour = 0, initialMinute = 0, is24Hour = true
@@ -246,14 +247,6 @@ fun AddScreen(
             ) {
                 Text(text = "Save task")
             }
-
-//            if(t) {
-//                AlertDialog(onDismissRequest = { t = false },
-//                    modifier = Modifier.background(Color.White)) {
-//                    Text(text = taskUiState.taskDetails.toString())
-//                }
-//            }
-
         }
     }
 }

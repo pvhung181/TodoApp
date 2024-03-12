@@ -9,6 +9,7 @@ import vn.tutorial.todolist.data.repository.CategoryRepository
 import vn.tutorial.todolist.data.repository.UserRepository
 import vn.tutorial.todolist.model.Category
 import vn.tutorial.todolist.model.User
+import vn.tutorial.todolist.util.miliToLocalDate
 import java.sql.Date
 import java.time.LocalDate
 
@@ -79,6 +80,17 @@ fun UserInfo.toUser(): User = User(
     id = 1,
     fullName = userName,
     birthDay = Date.valueOf(birthDay.toString()),
+    avatar = avatar,
+    comingTasks = comingTasks,
+    completedTasks = completedTasks,
+    totalTasks = totalTasks,
+    email = email
+)
+
+fun User.toUserInfor(): UserInfo = UserInfo(
+    userName = fullName,
+    birthDay = miliToLocalDate(birthDay.time),
+    email = email,
     avatar = avatar,
     comingTasks = comingTasks,
     completedTasks = completedTasks,

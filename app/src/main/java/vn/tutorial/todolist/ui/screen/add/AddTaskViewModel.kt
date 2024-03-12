@@ -60,7 +60,7 @@ class AddTaskViewModel(
 
     val user = userRepository.getUser(1)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), User(
-            1, "username", "", Date.valueOf(LocalDate.now().minusDays(2).toString()), 0,0,0
+            1, "username", "", "", Date.valueOf(LocalDate.now().minusDays(2).toString()), 0,0,0
         ))
 
     suspend fun saveTask(task: Task): Boolean {

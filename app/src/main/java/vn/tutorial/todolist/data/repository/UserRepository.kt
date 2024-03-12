@@ -8,6 +8,8 @@ interface UserRepository {
     suspend fun insert(user: User)
     suspend fun update(user: User)
     fun getUser(id: Int): Flow<User>
+
+    suspend fun getUserNotTracking(id: Int): User
 }
 
 class UserRepositoryImpl(
@@ -23,6 +25,10 @@ class UserRepositoryImpl(
 
     override fun getUser(id: Int): Flow<User> {
         return userDao.getUserById(id)
+    }
+
+    override suspend fun getUserNotTracking(id: Int): User {
+        return userDao.getUserByIdNotTracking(id)
     }
 
 }

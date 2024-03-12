@@ -13,6 +13,9 @@ interface UserDao {
     @Query("select * from user where id = :id")
     fun getUserById(id: Int): Flow<User>
 
+    @Query("select * from user where id = :id")
+    suspend fun getUserByIdNotTracking(id: Int): User
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User)
 

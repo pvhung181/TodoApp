@@ -14,7 +14,7 @@ import vn.tutorial.todolist.model.Task
 import vn.tutorial.todolist.model.User
 
 @Database(entities = [Category::class, Task::class, User::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)

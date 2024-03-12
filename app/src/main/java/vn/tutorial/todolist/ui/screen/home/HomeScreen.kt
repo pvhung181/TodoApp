@@ -2,12 +2,8 @@ package vn.tutorial.todolist.ui.screen.home
 
 import android.net.Uri
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -35,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -69,7 +62,7 @@ object HomeScreen : NavigationDestination {
 }
 
 @Composable
-fun HomeScreen (
+fun HomeScreen(
     navigateToHome: () -> Unit,
     navigateToAdd: () -> Unit,
     navigateToSetting: () -> Unit,
@@ -129,7 +122,7 @@ fun HomeScreen (
                 CategoryTaskItem(
                     image = painterResource(id = R.drawable.sun_transparent),
                     title = stringResource(id = R.string.today_title),
-                    amountOfTasks = allTasks.tasks.filter {task ->
+                    amountOfTasks = allTasks.tasks.filter { task ->
                         val date = Date(System.currentTimeMillis())
                         date.toString() == localDateTimeToDate(task.dateBegin).toString()
                     }.size,
@@ -182,12 +175,12 @@ fun UserInformation(
     amountOfTasks: Int,
     modifier: Modifier = Modifier
 ) {
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 48.dp),
         horizontalArrangement = Arrangement.Absolute.SpaceAround
-    ){
+    ) {
         Column {
             Text(
                 text = stringResource(id = R.string.hello_user, user.fullName),
@@ -203,27 +196,23 @@ fun UserInformation(
             )
         }
 
-//        Log.e("AsyncImage", user.avatar)
-//        Log.e("AsyncImage", user.avatar.length.toString())
-
-//            Log.e("AsyncImage", "In asysn")
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(Uri.parse(user.avatar))
-                    .placeholder(R.drawable.default_avatar)
-                    .error(R.drawable.sample_avatar)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(100.dp)
-                    .clip(shape = Shapes.small),
-                contentScale = ContentScale.Crop,
-                onError = {
-                    Log.e("AsyncImage", it.result.throwable.message.toString())
-                }
-            )
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(Uri.parse(user.avatar))
+                .placeholder(R.drawable.default_avatar)
+                .error(R.drawable.default_avatar)
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            modifier = Modifier
+                .width(100.dp)
+                .height(100.dp)
+                .clip(shape = Shapes.small),
+            contentScale = ContentScale.Crop,
+            onError = {
+                Log.e("AsyncImage", it.result.throwable.message.toString())
+            }
+        )
 
 
     }
@@ -246,43 +235,42 @@ fun CategoryTaskItem(
             .height(dimensionResource(id = R.dimen.height_of_category_item)),
         shape = RoundedCornerShape(12.dp)
     ) {
-            Row (
-                modifier = modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Image(
-                    painter = image,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(60.dp)
-                        .padding(end = 16.dp)
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = image,
+                contentDescription = null,
+                modifier = Modifier
+                    .width(60.dp)
+                    .padding(end = 16.dp)
+            )
+
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.displayMedium
                 )
 
-                Column (
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(start = 8.dp, end = 8.dp)
-                ){
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.displayMedium
-                    )
-
-                    Text(
-                        text = "$amountOfTasks tasks",
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
-                }
-
+                Text(
+                    text = "$amountOfTasks tasks",
+                    style = MaterialTheme.typography.labelLarge
+                )
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+            }
+
+        }
     }
 }
-
 
 
 @Composable
@@ -293,24 +281,25 @@ fun BottomAppBar(
     navigateToSetting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(1.dp),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         IconButton(
             onClick = { navigateToHome() },
-            enabled = (currentScreen !=  HomeScreen.route)
+            enabled = (currentScreen != HomeScreen.route)
         ) {
             Icon(
                 imageVector = Icons.Default.Home,
                 contentDescription = null,
                 modifier = Modifier
                     .size(
-                    dimensionResource(id = R.dimen.size_of_icon)),
-                tint = if(currentScreen == HomeScreen.route) MaterialTheme.colorScheme.primary else Color.Black
+                        dimensionResource(id = R.dimen.size_of_icon)
+                    ),
+                tint = if (currentScreen == HomeScreen.route) MaterialTheme.colorScheme.primary else Color.Black
             )
         }
 
@@ -336,13 +325,13 @@ fun BottomAppBar(
 
         IconButton(
             onClick = { navigateToSetting() },
-            enabled = (currentScreen !=  SettingScreen.route)
+            enabled = (currentScreen != SettingScreen.route)
         ) {
             Icon(
                 imageVector = Icons.Default.AccountCircle,
                 contentDescription = null,
                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_of_icon)),
-                tint = if(currentScreen == SettingScreen.route) MaterialTheme.colorScheme.primary else Color.Black
+                tint = if (currentScreen == SettingScreen.route) MaterialTheme.colorScheme.primary else Color.Black
             )
         }
     }
@@ -368,6 +357,6 @@ fun BottomAppBarPreview() {
 )
 fun HomeScreenPreview() {
     HomeScreen(
-        {}, {}, {},{},{},{},{},{}
+        {}, {}, {}, {}, {}, {}, {}, {}
     )
 }
