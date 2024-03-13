@@ -1,11 +1,13 @@
 package vn.tutorial.todolist.ui.screen.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -213,20 +216,32 @@ fun CategoryDetailScreen(
                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = null)
             }
 
-            LazyColumn {
-                items(tasks.filter {item ->
+            if(tasks.none { item ->
                     Date(datePickerState.selectedDateMillis!!).toString() ==
                             localDateTimeToDate(item.dateBegin).toString()
-                }) { task ->
-                    TaskItem(
-                        task = task,
-                        onDelete = {
-                            onDelete(task)
-                        },
-                        onCheckChange = {v ->
-                            onCheckChange(v, task)
-                        }
-                    )
+                }) {
+                Image(
+                    painter = painterResource(id = R.drawable.no_tasks_background),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            else {
+                LazyColumn {
+                    items(tasks.filter {item ->
+                        Date(datePickerState.selectedDateMillis!!).toString() ==
+                                localDateTimeToDate(item.dateBegin).toString()
+                    }) { task ->
+                        TaskItem(
+                            task = task,
+                            onDelete = {
+                                onDelete(task)
+                            },
+                            onCheckChange = {v ->
+                                onCheckChange(v, task)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -280,10 +295,10 @@ fun TodayCategoryScreen(
         }
     ) {
         if(tasks.isEmpty()) {
-            Text(
-                text = "You don't have any task today",
-                style = MaterialTheme.typography.displayMedium,
-                modifier = Modifier.padding(it)
+            Image(
+                painter = painterResource(id = R.drawable.no_tasks_background),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
             )
         }
         else {
@@ -357,13 +372,18 @@ fun TaskItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .border(
+                color = if(task.isCompleted) colorResource(id = R.color.little_green)
+                else colorResource(id = R.color.little_red),
+                width = 1.dp
+            )
     ) {
         Row(
-            modifier = Modifier
-                .background(
-                    color = if(task.isCompleted) colorResource(id = R.color.little_green)
-                    else colorResource(id = R.color.little_red)
-                ),
+//            modifier = Modifier
+//                .background(
+//                    color = if(task.isCompleted) colorResource(id = R.color.little_green)
+//                    else colorResource(id = R.color.little_red)
+//                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,11 +49,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import vn.tutorial.todolist.R
+import vn.tutorial.todolist.model.Task
 import vn.tutorial.todolist.model.User
+import vn.tutorial.todolist.ui.screen.home.TaskItem
 import vn.tutorial.todolist.ui.screen.start.OutlinedTextFieldWithLeadingIcons
 import vn.tutorial.todolist.ui.screen.user.ProfileScreen
 import vn.tutorial.todolist.ui.theme.Shapes
 import java.sql.Date
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -194,6 +198,33 @@ fun Test(
         }
     }
 
+}
+
+@Composable
+fun TestNoTask() {
+    Column {
+        Text(text = "00:00 am")
+        TaskItem(
+            task = Task(
+                1,
+                "Nothing",
+                1,
+                1,
+                "nothing",
+                false,
+                Date.valueOf("2023-1-1"),
+                LocalDateTime.now(), LocalDateTime.now()
+            )
+            , onDelete = { /*TODO*/ })
+    }
+}
+
+@Preview(
+    showSystemUi = true
+)
+@Composable
+fun TestNoTaskPreview() {
+    TestNoTask()
 }
 
 //@Composable

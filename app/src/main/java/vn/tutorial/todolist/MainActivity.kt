@@ -1,6 +1,5 @@
 package vn.tutorial.todolist
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,13 +15,12 @@ class MainActivity : ComponentActivity() {
     private lateinit var dataStoreManager: DataStoreManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dataStoreManager = DataStoreManager(this)
+        dataStoreManager = DataStoreManager(applicationContext)
 
         setContent {
             TodoListTheme(
                 darkTheme = dataStoreManager.getValueDarkTheme()
             ) {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

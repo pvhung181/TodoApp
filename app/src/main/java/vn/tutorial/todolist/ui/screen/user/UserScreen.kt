@@ -149,13 +149,13 @@ fun UserScreen(
                     .padding(top = 8.dp, bottom = 8.dp)
             )
 
-            Card(onClick = {
-                coroutineScope.launch {
-                    viewModel.dataStoreManager.clearDatastore()
-                }
-            }) {
-                Text(text = "Clear datastore")
-            }
+//            Card(onClick = {
+//                coroutineScope.launch {
+//                    viewModel.dataStoreManager.clearDatastore()
+//                }
+//            }) {
+//                Text(text = "Clear datastore")
+//            }
         }
     }
 }

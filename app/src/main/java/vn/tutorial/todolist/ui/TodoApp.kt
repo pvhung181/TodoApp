@@ -13,8 +13,7 @@ import vn.tutorial.todolist.ui.screen.start.CollectUserInfoScreen
 @Composable
 fun TodoApp(
     navController: NavHostController = rememberNavController(),
-    isFirstTime: Boolean = false,
-    modifier: Modifier = Modifier
+    isFirstTime: Boolean = false
 ) {
     TodoNavHost(
         navController = navController,
