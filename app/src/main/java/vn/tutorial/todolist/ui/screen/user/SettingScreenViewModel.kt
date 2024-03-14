@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import vn.tutorial.todolist.data.DataStoreManager
+import vn.tutorial.todolist.data.getDefaultUser
 import vn.tutorial.todolist.data.repository.UserRepository
 import vn.tutorial.todolist.model.User
 import java.sql.Date
@@ -23,13 +24,11 @@ class SettingScreenViewModel(
 
      val user = userRepository.getUser(1)
         .stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(5000), User(
-                1, "username", "","" ,Date.valueOf(LocalDate.now().minusDays(2).toString()), 0, 0, 0
-            )
+            viewModelScope, SharingStarted.WhileSubscribed(5000), getDefaultUser()
         )
 
 
-    private val _userInfo = mutableStateOf(User( 1, "username", "", "", Date.valueOf(LocalDate.now().minusDays(2).toString()), 0, 0, 0))
+    private val _userInfo = mutableStateOf(getDefaultUser())
     val userInfo: State<User> = _userInfo
     var state = mutableStateOf(ProfileState.LOADING)
 

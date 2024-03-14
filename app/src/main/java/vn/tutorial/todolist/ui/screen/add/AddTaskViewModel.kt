@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import vn.tutorial.todolist.data.getDefaultUser
 import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.UserRepository
 import vn.tutorial.todolist.data.repository.WorManagerNotificationRepository
@@ -58,9 +59,7 @@ class AddTaskViewModel(
         private set
 
     val user = userRepository.getUser(1)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), User(
-            1, "username", "", "", Date.valueOf(LocalDate.now().minusDays(2).toString()), 0,0,0
-        ))
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), getDefaultUser())
 
     suspend fun saveTask(task: Task): Boolean {
         if (isValid()) {

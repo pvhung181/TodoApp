@@ -29,5 +29,11 @@ data class User(
     val completedTasks: Int,
 
     @ColumnInfo(name = "total_tasks")
-    val totalTasks: Int
+    val totalTasks: Int,
+
+    @ColumnInfo(name = "address")
+    val address: String,
+
+    @ColumnInfo(name = "city")
+    val city: String
 )

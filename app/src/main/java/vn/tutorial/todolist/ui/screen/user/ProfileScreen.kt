@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -253,8 +254,44 @@ fun ProfileScreen(
                             Icon(imageVector = Icons.Default.Email, contentDescription = null)
                         },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                    )
+
+                    OutlinedTextFieldWithLeadingIcons(
+                        value = user.address,
+                        onValueChange = {address ->
+                            viewModel.updateUserInfor(user.copy(address = address))
+                        },
+                        label = {
+                            Text(text = "Address")
+                        },
+                        leadingIcons = {
+                            Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
+                        },
+                        singleLine = true,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                     )
+
+                    OutlinedTextFieldWithLeadingIcons(
+                        value = user.city,
+                        onValueChange = {city ->
+                            viewModel.updateUserInfor(user.copy(city = city))
+                        },
+                        label = {
+                            Text(text = "City")
+                        },
+                        leadingIcons = {
+                            Icon(
+                                imageVector = Icons.Default.Email,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                    )
+
+
 
                     Spacer(modifier = Modifier.weight(1f))
 
@@ -267,7 +304,9 @@ fun ProfileScreen(
                             navigateUp()
                         },
                         modifier = modifier.fillMaxWidth(),
-                        enabled = (userTracking.avatar != user.avatar || userTracking.fullName != user.fullName || userTracking.email != user.email)
+                        enabled = (userTracking.avatar != user.avatar || userTracking.fullName != user.fullName
+                                || userTracking.email != user.email || userTracking.address != user.address
+                                || userTracking.city != user.city)
                     ) {
                         Text(text = "Save change")
                     }

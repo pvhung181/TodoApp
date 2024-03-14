@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import vn.tutorial.todolist.data.getDefaultUser
 import vn.tutorial.todolist.data.repository.CategoryRepository
 import vn.tutorial.todolist.data.repository.TaskRepository
 import vn.tutorial.todolist.data.repository.UserRepository
@@ -41,9 +42,7 @@ class HomeViewModel(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUiState())
 
     val user = userRepository.getUser(1)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), User(
-            1, "username", "", "", Date.valueOf(LocalDate.now().minusDays(2).toString()), 0,0,0
-        ))
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), getDefaultUser())
 
     suspend fun deleteTask(task: Task) {
 
@@ -58,9 +57,3 @@ class HomeViewModel(
 class HomeUiState(
     var tasks: List<Task> = listOf(),
 )
-
-fun HomeUiState.getByCategoryId(id: Int): List<Task> {
-    return tasks.filter {
-        it.categoryId == id
-    }
-}

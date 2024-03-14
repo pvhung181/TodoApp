@@ -24,7 +24,7 @@ data class UserInfo(
     val totalTasks: Int = 0,
     val email: String = "",
     val address: String = "",
-    val city: String = ""
+    val city: String = "",
 )
 
 
@@ -83,5 +83,7 @@ fun UserInfo.toUser(): User = User(
     comingTasks = comingTasks,
     completedTasks = completedTasks,
     totalTasks = totalTasks,
-    email = email
+    email = email,
+    city = city,
+    address = address
 )
