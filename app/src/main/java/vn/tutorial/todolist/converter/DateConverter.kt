@@ -1,7 +1,5 @@
 package vn.tutorial.todolist.converter
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
 import java.sql.Date
 import java.time.LocalDateTime

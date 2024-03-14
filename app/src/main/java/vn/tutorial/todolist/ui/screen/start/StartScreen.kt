@@ -64,6 +64,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import vn.tutorial.todolist.R
+import vn.tutorial.todolist.constants.USERNAME_LIMIT_CHARACTER
 import vn.tutorial.todolist.data.getCategory
 import vn.tutorial.todolist.service.NotificationService
 import vn.tutorial.todolist.ui.AppViewModelProvider
@@ -233,7 +234,7 @@ fun CollectUserInfoScreen(
             OutlinedTextFieldWithLeadingIcons(
                 value = uiState.userInfo.userName,
                 onValueChange = {name ->
-                    if(name.length < StartViewModel.LIMIT_CHAR) {
+                    if(name.length < USERNAME_LIMIT_CHARACTER) {
                         viewModel.updateUiState(
                             uiState.userInfo.copy(
                                 userName = name
@@ -254,7 +255,7 @@ fun CollectUserInfoScreen(
                 modifier = Modifier.padding(8.dp),
                 isMandatory = true,
                 trailingIcon = {
-                    Text(text = "${uiState.userInfo.userName.length}/${StartViewModel.LIMIT_CHAR}")
+                    Text(text = "${uiState.userInfo.userName.length}/${USERNAME_LIMIT_CHARACTER}")
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)

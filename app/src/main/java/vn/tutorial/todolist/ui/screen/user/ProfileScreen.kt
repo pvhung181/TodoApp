@@ -2,6 +2,7 @@ package vn.tutorial.todolist.ui.screen.user
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
@@ -34,6 +36,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,10 +55,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -65,6 +70,7 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import vn.tutorial.todolist.R
+import vn.tutorial.todolist.constants.USERNAME_LIMIT_CHARACTER
 import vn.tutorial.todolist.ui.AppViewModelProvider
 import vn.tutorial.todolist.ui.navigation.NavigationDestination
 import vn.tutorial.todolist.ui.screen.start.OutlinedTextFieldWithLeadingIcons
@@ -89,6 +95,7 @@ fun ProfileScreen(
         ProfileState.LOADING -> LoadingScreen()
         else -> {
             val user = viewModel.userInfo.value
+            val userTracking by viewModel.user.collectAsState()
 
             val coroutineScope = rememberCoroutineScope()
 
@@ -128,10 +135,12 @@ fun ProfileScreen(
                     ) {
                         Row(
                             horizontalArrangement = Arrangement.Center,
-                            modifier = modifier.fillMaxWidth()
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .padding(4.dp)
                         ) {
                             Text(
-                                text = user.fullName,
+                                text = userTracking.fullName,
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }
@@ -160,7 +169,7 @@ fun ProfileScreen(
                         Text(
                             text = "Change avatar",
                             textDecoration = TextDecoration.Underline,
-                            color = Color.Blue,
+                            color = Blue,
                             modifier = Modifier
                                 .clickable {
                                     photoPicker.launch(
@@ -200,12 +209,20 @@ fun ProfileScreen(
 
                     OutlinedTextFieldWithLeadingIcons(
                         value = user.fullName,
-                        onValueChange = {name -> viewModel.updateUserInfor(user.copy(fullName = name))},
+                        onValueChange = {name ->
+                            if(name.length <= USERNAME_LIMIT_CHARACTER)
+                                viewModel.updateUserInfor(user.copy(fullName = name))
+                        },
                         label = {
                             Text(text = "Username")
                         },
                         leadingIcons = {
                             Icon(imageVector = Icons.Default.Person, contentDescription = null)
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        trailingIcon = {
+                            Text(text = "${user.fullName.length}/$USERNAME_LIMIT_CHARACTER")
                         }
                     )
 
@@ -234,7 +251,9 @@ fun ProfileScreen(
                         },
                         leadingIcons = {
                             Icon(imageVector = Icons.Default.Email, contentDescription = null)
-                        }
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -242,14 +261,13 @@ fun ProfileScreen(
                     Button(
                         onClick = {
                             coroutineScope.launch {
-                                with(Dispatchers.IO) {
                                     viewModel.updateUser(user)
-                                }
                             }
 
                             navigateUp()
                         },
-                        modifier = modifier.fillMaxWidth()
+                        modifier = modifier.fillMaxWidth(),
+                        enabled = (userTracking.avatar != user.avatar || userTracking.fullName != user.fullName || userTracking.email != user.email)
                     ) {
                         Text(text = "Save change")
                     }
@@ -294,7 +312,7 @@ fun PieChart(
     val colors = listOf(
         Green,
         Red,
-        Yellow
+        colorResource(id = R.color.purple_500)
     )
 
     var animationPlayed by remember { mutableStateOf(false) }

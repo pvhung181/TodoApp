@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">TodoList</string>
-    
+
+<!--    personal information-->
+    <string name="author">Phạm Việt Hùng</string>
+    <string name="author_email">pvhung181@gmail.com</string>
+
+<!--  Setting Screen  -->
     <string name="hello_user">Hello %s</string>
     <string name="tasks_today">Today you have %d tasks</string>
     <string name="edit_profile">Edit your profile</string>
@@ -33,6 +38,4 @@
     <string name="notCompleted_tasks">Not Completed : %s</string>
     <string name="ongoing_tasks">Ongoing : %s</string>
 
-
-    <string name="author_email">pvhung181@gmail.com</string>
 </resources>

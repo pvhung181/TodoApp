@@ -10,4 +10,7 @@
 
     <color name="little_green">#3274E291</color>
     <color name="little_red">#32F28585</color>
+
+    <color name="v_little_green">#1074E291</color>
+    <color name="v_little_red">#10F28585</color>
 </resources>

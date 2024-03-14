@@ -1,6 +1,5 @@
 package vn.tutorial.todolist.ui.screen.start
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,11 +36,6 @@ class StartViewModel(
     val todoNotificationService: NotificationService,
     val autoSyncManagerRepository: AutoSyncManagerRepository
 ) : ViewModel() {
-
-    companion object {
-        const val LIMIT_CHAR: Int = 20
-    }
-
     private var _uiState = mutableStateOf(StartUiState())
     val uiState = _uiState
 
@@ -90,14 +84,4 @@ fun UserInfo.toUser(): User = User(
     completedTasks = completedTasks,
     totalTasks = totalTasks,
     email = email
-)
-
-fun User.toUserInfor(): UserInfo = UserInfo(
-    userName = fullName,
-    birthDay = miliToLocalDate(birthDay.time),
-    email = email,
-    avatar = avatar,
-    comingTasks = comingTasks,
-    completedTasks = completedTasks,
-    totalTasks = totalTasks
 )

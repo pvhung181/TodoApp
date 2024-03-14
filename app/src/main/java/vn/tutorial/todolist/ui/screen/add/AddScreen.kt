@@ -157,7 +157,6 @@ fun AddScreen(
 
             DateTimePickerUi(
                 labelForCLock = "Start with",
-                taskDetail = taskUiState.taskDetails,
                 onDismissRequest = {
                     val dateBegin = Instant.ofEpochMilli(startDatePickerState.selectedDateMillis!!).atZone(ZoneId.systemDefault()).toLocalDate();
                     viewModel.updateUiState(
@@ -183,7 +182,6 @@ fun AddScreen(
 
             DateTimePickerUi(
                 labelForCLock = "End with",
-                taskDetail = taskUiState.taskDetails,
                 onDismissRequest = {
                     val dateEnd = Instant.ofEpochMilli(endDatePickerState.selectedDateMillis!!).atZone(ZoneId.systemDefault()).toLocalDate();
                     viewModel.updateUiState(
@@ -255,7 +253,6 @@ fun AddScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateTimePickerUi(
-    taskDetail: TaskDetails,
     labelForCLock: String,
     onDismissRequest: () -> Unit,
     labelForDay: String = "Select a day",
@@ -272,7 +269,6 @@ fun DateTimePickerUi(
     var openTimePicker by remember {
         mutableStateOf(false)
     }
-
 
     if (showDatePicker) {
         DatePickerDialog(
@@ -420,8 +416,6 @@ fun CategoryOfTasks(
 
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
     onDismissRequest: () -> Unit,
@@ -437,24 +431,6 @@ fun TimePickerDialog(
         text = content
     )
 }
-
-//@Composable
-//@Preview
-//fun TimePickerDialogPreview() {
-//    TimePickerDialog()
-//}
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//@Preview(
-//    showBackground = true
-//)
-//fun DatePickerUiPreview() {
-//    DatePickerUi(
-//        labelForCLock = "",
-//
-//    )
-//}
 
 @Composable
 fun TitleOfTask(
@@ -494,7 +470,8 @@ fun TitleOfTask(
 
 @Composable
 fun TopAppBar(
-    navigateBack: () -> Unit, title: String, modifier: Modifier = Modifier
+    navigateBack: () -> Unit, title: String,
+    modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically

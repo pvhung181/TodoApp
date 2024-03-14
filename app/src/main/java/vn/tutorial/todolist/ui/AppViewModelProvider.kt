@@ -15,7 +15,6 @@ object AppViewModelProvider {
         initializer {
             HomeViewModel(
                 taskRepository = todoApplication().container.taskRepository,
-                categoryRepository = todoApplication().container.categoryRepository,
                 userRepository = todoApplication().container.userRepository
             )
         }

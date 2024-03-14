@@ -51,16 +51,8 @@ fun AboutScreen(
                 .padding(it)
                 .padding(8.dp)
         ) {
-            Text(text = "Author : Pham Viet Hung")
-            Text(text = "Email : pvhung181@gmail.com")
+            Text(text = "Author : ${stringResource(id = R.string.author)}")
+            Text(text = "Email : ${stringResource(id = R.string.author_email)}")
         }
     }
-}
-
-@Composable
-@Preview(
-    showBackground = true
-)
-fun AboutScreenPreview() {
-    AboutScreen(navigateBack = { /*TODO*/ })
 }

@@ -1,16 +1,10 @@
 package vn.tutorial.todolist.ui.screen.user
 
-import androidx.compose.runtime.MutableState
+import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -19,9 +13,6 @@ import kotlinx.coroutines.launch
 import vn.tutorial.todolist.data.DataStoreManager
 import vn.tutorial.todolist.data.repository.UserRepository
 import vn.tutorial.todolist.model.User
-import vn.tutorial.todolist.ui.screen.start.UserInfo
-import vn.tutorial.todolist.ui.screen.start.toUser
-import vn.tutorial.todolist.ui.screen.start.toUserInfor
 import java.sql.Date
 import java.time.LocalDate
 
@@ -43,6 +34,7 @@ class SettingScreenViewModel(
     var state = mutableStateOf(ProfileState.LOADING)
 
     init {
+        Log.e("Test", "In init method in setting screen viewmodel")
         viewModelScope.launch {
             _userInfo.value = userRepository.getUserNotTracking(1)
         }

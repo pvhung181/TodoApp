@@ -1,6 +1,5 @@
 package vn.tutorial.todolist.data.repository
 
-import androidx.room.Query
 import vn.tutorial.todolist.data.dao.CategoryDao
 import vn.tutorial.todolist.model.Category
 

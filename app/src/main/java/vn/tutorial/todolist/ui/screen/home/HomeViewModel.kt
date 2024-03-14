@@ -22,7 +22,6 @@ import java.time.LocalTime
 
 class HomeViewModel(
     val taskRepository: TaskRepository,
-    val categoryRepository: CategoryRepository,
     val userRepository: UserRepository
 ) : ViewModel() {
     val allTasks: StateFlow<HomeUiState> =
@@ -54,12 +53,6 @@ class HomeViewModel(
     suspend fun updateTask(task: Task) {
         taskRepository.updateTask(task)
     }
-
-    suspend fun getTaskByDate(date: String): List<Task> {
-          return  taskRepository.getTaskByDate(date)
-    }
-
-
 }
 
 class HomeUiState(

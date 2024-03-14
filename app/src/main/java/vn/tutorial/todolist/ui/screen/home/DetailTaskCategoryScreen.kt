@@ -41,6 +41,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -99,7 +100,7 @@ fun DetailTaskCategoryScreen(
             tasks = allTasks.value.tasks.filter {
                 val date = Date(System.currentTimeMillis())
                 date.toString() == localDateTimeToDate(it.dateBegin).toString()
-            }.sortedWith(compareBy {it.dateBegin} ),
+            }.sortedWith(compareBy { it.dateBegin }),
             navigateBack = navigateBack,
             onDelete = { task ->
                 coroutineScope.launch {
@@ -107,7 +108,7 @@ fun DetailTaskCategoryScreen(
                 }
             },
             onCheckChange = { v, t ->
-                if(!t.dateEnd.isBefore(LocalDateTime.now())) {
+                if (!t.dateEnd.isBefore(LocalDateTime.now())) {
                     coroutineScope.launch {
                         viewModel.updateTask(t.copy(isCompleted = v))
 
@@ -128,7 +129,7 @@ fun DetailTaskCategoryScreen(
                 }
             },
             onCheckChange = { v, t ->
-                if(!t.dateEnd.isBefore(LocalDateTime.now())) {
+                if (!t.dateEnd.isBefore(LocalDateTime.now())) {
                     coroutineScope.launch {
                         viewModel.updateTask(t.copy(isCompleted = v))
                     }
@@ -138,7 +139,7 @@ fun DetailTaskCategoryScreen(
 
         else -> CategoryDetailScreen(
             title = title,
-            tasks = when(title) {
+            tasks = when (title) {
                 CategoryTitle.PERSONAL.title -> personalUiState.value.tasks
                 CategoryTitle.WORK.title -> workUiState.value.tasks
                 else -> shoppingUiState.value.tasks
@@ -150,7 +151,13 @@ fun DetailTaskCategoryScreen(
                 }
             },
             onCheckChange = { v, t ->
-                if(!t.dateEnd.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)))) {
+                if (!t.dateEnd.isBefore(
+                        LocalDateTime.of(
+                            LocalDate.now(),
+                            LocalTime.of(LocalTime.now().hour, LocalTime.now().minute)
+                        )
+                    )
+                ) {
                     coroutineScope.launch {
                         viewModel.updateTask(t.copy(isCompleted = v))
                     }
@@ -216,7 +223,7 @@ fun CategoryDetailScreen(
                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = null)
             }
 
-            if(tasks.none { item ->
+            if (tasks.none { item ->
                     Date(datePickerState.selectedDateMillis!!).toString() ==
                             localDateTimeToDate(item.dateBegin).toString()
                 }) {
@@ -225,10 +232,9 @@ fun CategoryDetailScreen(
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize()
                 )
-            }
-            else {
+            } else {
                 LazyColumn {
-                    items(tasks.filter {item ->
+                    items(tasks.filter { item ->
                         Date(datePickerState.selectedDateMillis!!).toString() ==
                                 localDateTimeToDate(item.dateBegin).toString()
                     }) { task ->
@@ -237,7 +243,7 @@ fun CategoryDetailScreen(
                             onDelete = {
                                 onDelete(task)
                             },
-                            onCheckChange = {v ->
+                            onCheckChange = { v ->
                                 onCheckChange(v, task)
                             }
                         )
@@ -248,7 +254,7 @@ fun CategoryDetailScreen(
 
     }
 
-    if(openDialog) {
+    if (openDialog) {
         DatePickerDialog(
             onDismissRequest = {
                 openDialog = false
@@ -294,14 +300,13 @@ fun TodayCategoryScreen(
             TopAppBar(navigateBack = navigateBack, title = title)
         }
     ) {
-        if(tasks.isEmpty()) {
+        if (tasks.isEmpty()) {
             Image(
                 painter = painterResource(id = R.drawable.no_tasks_background),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
-        }
-        else {
+        } else {
             LazyColumn(
                 modifier = Modifier.padding(it)
             ) {
@@ -311,7 +316,7 @@ fun TodayCategoryScreen(
                         onDelete = {
                             onDelete(task)
                         },
-                        onCheckChange = {v ->
+                        onCheckChange = { v ->
                             onCheckChange(v, task)
                         }
                     )
@@ -321,8 +326,6 @@ fun TodayCategoryScreen(
 
     }
 }
-
-
 
 
 @Composable
@@ -372,18 +375,19 @@ fun TaskItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .border(
-                color = if(task.isCompleted) colorResource(id = R.color.little_green)
-                else colorResource(id = R.color.little_red),
-                width = 1.dp
-            )
+
     ) {
         Row(
-//            modifier = Modifier
-//                .background(
-//                    color = if(task.isCompleted) colorResource(id = R.color.little_green)
-//                    else colorResource(id = R.color.little_red)
-//                ),
+            modifier = Modifier
+                .border(
+                    color = if (task.isCompleted) colorResource(id = R.color.little_green)
+                    else colorResource(id = R.color.little_red),
+                    width = 2.dp
+                )
+                .background(
+                    color = if (task.isCompleted) colorResource(id = R.color.v_little_green)
+                    else colorResource(id = R.color.v_little_red)
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
@@ -396,11 +400,11 @@ fun TaskItem(
                 Text(
                     text = task.title,
                     style = MaterialTheme.typography.displayMedium,
-                    textDecoration = if(task.isCompleted) TextDecoration.LineThrough else null
+                    textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null
                 )
                 Text(
                     text = task.description,
-                    textDecoration = if(task.isCompleted) TextDecoration.LineThrough else null
+                    textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null
                 )
                 Text(
                     text = "Duration : ${prettierLocalDateTime(task.dateBegin)} - ${
@@ -408,7 +412,7 @@ fun TaskItem(
                             task.dateEnd
                         )
                     }",
-                    textDecoration = if(task.isCompleted) TextDecoration.LineThrough else null
+                    textDecoration = if (task.isCompleted) TextDecoration.LineThrough else null
                 )
 
             }
@@ -427,7 +431,7 @@ fun TaskItem(
                 )
             }
 
-            if(openDialog) {
+            if (openDialog) {
                 AlertDialog(
                     onDismissRequest = { openDialog = false },
                     confirmButton = {
@@ -439,7 +443,7 @@ fun TaskItem(
                         }
                     },
                     dismissButton = {
-                        IconButton(onClick = {openDialog = false}) {
+                        IconButton(onClick = { openDialog = false }) {
                             Text(text = "No")
                         }
                     },
